@@ -1,0 +1,15 @@
+{
+  "msg": 76545,
+  "src": "nws",
+  "details": {
+    "wfo": "mhx",
+    "code": "lsr",
+    "event": "hail",
+    "mag": 1.25,
+    "measured": false,
+    "loc": [35.46, -76.48],
+    "time": "0215 AM"
+  },
+  "issued": 1356878790,
+  "ingested": 1357879711,
+}
