@@ -40,7 +40,6 @@ func getLonFromString(input string) float32 {
 	return float32(lon * -1)
 }
 
-// TODO share with SVR
 func getPolygon(text string) []Coordinates {
 	var polygon []Coordinates
 
@@ -61,7 +60,6 @@ func getPolygon(text string) []Coordinates {
 	return polygon
 }
 
-// TODO share with SVR
 func getMovement(text string) movement {
 	movement := movement{}
 	movementMatch := movementRegex.FindStringSubmatch(text)

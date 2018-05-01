@@ -18,20 +18,22 @@ func TestProcessLSRProduct_Valid_LSR(t *testing.T) {
 	issued, _ := time.Parse(time.RFC3339, "2018-03-27T01:16:00Z")
 
 	expectedDetails := lsrDetails{
-		Code:     "lsr",
-		Name:     "Local Storm Report",
-		Issued:   issued,
-		Wfo:      "KSJT",
-		Type:     "hail",
-		Reported: reported,
-		Location: "1 e silver",
-		Lat:      32.07,
-		Lon:      -100.66,
-		Mag:      "e1.25 inch",
-		County:   "coke",
-		State:    "tx",
-		Source:   "storm chaser",
-		Remarks:  "1.25 hail on hwy 208 near silver",
+		Code:        "lsr",
+		Name:        "Local Storm Report",
+		Issued:      issued,
+		Wfo:         "KSJT",
+		Type:        "hail",
+		Reported:    reported,
+		Location:    "1 e silver",
+		Lat:         32.07,
+		Lon:         -100.66,
+		MagMeasured: false,
+		MagValue:    1.25,
+		MagUnits:    "inch",
+		County:      "coke",
+		State:       "tx",
+		Source:      "storm chaser",
+		Remarks:     "1.25 hail on hwy 208 near silver",
 	}
 
 	expected := WxEvent{Details: expectedDetails}
@@ -107,6 +109,23 @@ func TestGetLSRTimezoneOffset(t *testing.T) {
 		if result != params.Expected {
 			msg := fmt.Sprintf("result: '%v', Expected: '%v'", result, params.Expected)
 			t.Errorf("TestGetLSRTimezoneOffset - %s failed. %s", testName, msg)
+		}
+	}
+}
+
+func TestGetMagnitude(t *testing.T) {
+	tests := map[string]helpers.TestParameters{}
+	tests["Empty String"] = helpers.TestParameters{Input: "", Expected: magnitude{}}
+	tests["Estimated Hail"] = helpers.TestParameters{Input: "E4.50 INCH", Expected: magnitude{Measured: false, Value: 4.5, Units: "inch"}}
+	tests["Measured Hail"] = helpers.TestParameters{Input: "M0.75 INCH", Expected: magnitude{Measured: true, Value: .75, Units: "inch"}}
+	tests["Estimated Wind"] = helpers.TestParameters{Input: "E88 MPH", Expected: magnitude{Measured: false, Value: 88, Units: "mph"}}
+
+	for testName, params := range tests {
+		result := getMagnitude(params.Input)
+
+		if result != params.Expected {
+			msg := fmt.Sprintf("result: '%v', Expected: '%v'", result, params.Expected)
+			t.Errorf("TestGetMagnitude - %s failed. %s", testName, msg)
 		}
 	}
 }

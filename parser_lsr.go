@@ -1,9 +1,13 @@
+// Helpful URL for finding test data: https://mesonet.agron.iastate.edu/request/gis/lsrs.phtml
+// Event Types: FLOOD, HAIL, TSTM WND DMG, SNOW, HEAVY RAIN, NON-TSTM WND GST
+
 package main
 
 import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -18,22 +22,50 @@ type lsrDetails struct {
 	Wfo    string
 
 	// Derived fields
-	Type     string
-	Datetime time.Time
-	Reported time.Time
-	Mag      string
-	Lat      float32
-	Lon      float32
-	Location string
-	County   string
-	State    string
-	Source   string
-	Remarks  string
+	Type        string
+	Datetime    time.Time
+	Reported    time.Time
+	MagMeasured bool
+	MagValue    float32
+	MagUnits    string
+	Lat         float32
+	Lon         float32
+	Location    string
+	County      string
+	State       string
+	Source      string
+	Remarks     string
+}
+
+type magnitude struct {
+	Measured bool
+	Value    float32
+	Units    string
 }
 
 const reportThresholdMinutes float64 = 60
 
-var timezoneRegex = regexp.MustCompile(`\d{3,4}\s[A|P]M\s(\w{3})\s`)
+var (
+	timezoneRegex  = regexp.MustCompile(`\d{3,4}\s[A|P]M\s(\w{3})\s`)
+	magnitudeRegex = regexp.MustCompile(`([e|m])([\d|\.]+)\s(.+)`)
+)
+
+func getMagnitude(line string) magnitude {
+	parsedMagnitude := magnitude{}
+	normalizedLine := helpers.NormalizeString(line, false)
+	match := magnitudeRegex.FindStringSubmatch(normalizedLine)
+	if len(match) == 4 {
+		parsedMagnitude.Measured = match[1] == "m"
+		parsedMagnitude.Units = match[3]
+		val, err := strconv.ParseFloat(match[2], 32)
+		if err == nil {
+			parsedMagnitude.Value = float32(val)
+		}
+	} else {
+		fmt.Println("Unable to format magnitude: '" + line + "'")
+	}
+	return parsedMagnitude
+}
 
 func getLSRTimezoneOffset(line string) string {
 	offset := "0000" // Default offset is UTC
@@ -84,11 +116,14 @@ func processLSRProduct(product Product) (WxEvent, error) {
 	// 3 lines after ..REMARKS.. contains DATE/MAG/COUNTY/ST/SOURCE
 	currentLine = lines[remarksLineIndex+3]
 	rawTime = fmt.Sprintf("%s %s", currentLine[0:10], rawTime)
-	// TODO break this out into size, isMeasured?
-	details.Mag = helpers.NormalizeString(currentLine[12:29], false)
 	details.County = helpers.NormalizeString(currentLine[29:48], false)
 	details.State = helpers.NormalizeString(currentLine[48:50], false)
 	details.Source = helpers.NormalizeString(currentLine[50:], false)
+
+	parsedMagnitude := getMagnitude(currentLine[12:29])
+	details.MagMeasured = parsedMagnitude.Measured
+	details.MagValue = parsedMagnitude.Value
+	details.MagUnits = parsedMagnitude.Units
 
 	// 5+ lines after ..REMARKS.. contains actual remarks (if present)
 	remarks := ""

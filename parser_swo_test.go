@@ -37,7 +37,7 @@ func TestBuildSWOEvent_Outlook(t *testing.T) {
 
 func TestBuildSWOEvent_MD(t *testing.T) {
 	var product Product
-	dataPath := "./data/swo-md.json"
+	dataPath := "./data/swo-md-continues.json"
 	json.Unmarshal(helpers.ReadJSONFromFile(dataPath), &product)
 
 	expected := `{"Source":"","Details":{"Code":"swo","Issued":1522276380,"Name":"Severe Storm Outlook Narrative (AC)","Wfo":"KWNS","SubCode":"mcd","Number":"0190","Affected":"West central through north central Mississippi and adjacent portions of Arkansas/Louisiana","Concerning":"Concerning...Tornado Watch 23...","WatchInfo":"The severe weather threat for Tornado Watch 23 continues.","Valid":"2018-03-28T22:32:00Z","Expires":"2018-03-29T00:30:00Z","WFOs":["meg","jan"],"Summary":"A risk for thunderstorm activity capable of producing damaging wind gusts and a couple of tornadoes will gradually spread across and northeast of the Vicksburg MS area, toward Greenwood and Tupelo, through 7-9 PM CDT.","Forecaster":"Kerr","ImageURI":"http://www.spc.noaa.gov/products/md/2018/mcd0190.gif","Polygon":[{"Lat":33.18,"Lon":-90.84},{"Lat":34.13,"Lon":-90.08},{"Lat":34.49,"Lon":-89.33},{"Lat":34.07,"Lon":-88.56},{"Lat":32.91,"Lon":-89.41},{"Lat":32.2,"Lon":-90.65},{"Lat":31.66,"Lon":-91.55},{"Lat":31.71,"Lon":-91.86},{"Lat":32.45,"Lon":-91.21},{"Lat":33.18,"Lon":-100.84}]},"Ingested":"0001-01-01T00:00:00Z","Summary":""}`
@@ -178,7 +178,23 @@ func TestParseSWODY_Unknown_Day(t *testing.T) {
 
 func TestParseSWOMCD(t *testing.T) {
 	var product Product
-	responsePath := "./data/swo-md.json"
+	responsePath := "./data/swo-md-tor-watch-likely.json"
+	json.Unmarshal(helpers.ReadJSONFromFile(responsePath), &product)
+	expected := `{"Code":"swo","Issued":1522773660,"Name":"Severe Storm Outlook Narrative (AC)","Wfo":"KWNS","SubCode":"mcd","Number":"0205","Affected":"Central and southern Indiana...far northern Kentucky...western Ohio","Concerning":"Concerning...Severe potential...Tornado Watch likely ","WatchInfo":"Probability of Watch Issuance...95 percent","Valid":"2018-04-03T16:41:00Z","Expires":"2018-04-03T19:15:00Z","WFOs":["iln","lmk","iwx","ind","pah","ilx"],"Summary":"Storms are expected to increase in intensity this afternoon with a few tornadoes possible along with large hail. Additional severe storms are likely later this evening.","Forecaster":"Jewell/Hart","ImageURI":"http://www.spc.noaa.gov/products/md/2018/mcd0205.gif","Polygon":[{"Lat":37.82,"Lon":-87.69},{"Lat":38.53,"Lon":-87.76},{"Lat":39.73,"Lon":-87.06},{"Lat":40.62,"Lon":-85.25},{"Lat":40.46,"Lon":-83.56},{"Lat":40.36,"Lon":-83.1},{"Lat":40.12,"Lon":-82.74},{"Lat":39.65,"Lon":-82.75},{"Lat":39.24,"Lon":-83.39},{"Lat":38.8,"Lon":-84.23},{"Lat":38.2,"Lon":-85.03},{"Lat":37.81,"Lon":-85.97},{"Lat":37.73,"Lon":-86.3},{"Lat":37.64,"Lon":-87.21},{"Lat":37.82,"Lon":-87.69}]}`
+
+	result := parseSWOMCD(product)
+	marshalledResult, _ := json.Marshal(result)
+
+	if string(marshalledResult) != expected {
+		fmt.Println("result: " + string(marshalledResult))
+		fmt.Println("expected: " + expected)
+		t.Error("Test failed")
+	}
+}
+
+func TestParseSWOMCD_Continues(t *testing.T) {
+	var product Product
+	responsePath := "./data/swo-md-continues.json"
 	json.Unmarshal(helpers.ReadJSONFromFile(responsePath), &product)
 	expected := `{"Code":"swo","Issued":1522276380,"Name":"Severe Storm Outlook Narrative (AC)","Wfo":"KWNS","SubCode":"mcd","Number":"0190","Affected":"West central through north central Mississippi and adjacent portions of Arkansas/Louisiana","Concerning":"Concerning...Tornado Watch 23...","WatchInfo":"The severe weather threat for Tornado Watch 23 continues.","Valid":"2018-03-28T22:32:00Z","Expires":"2018-03-29T00:30:00Z","WFOs":["meg","jan"],"Summary":"A risk for thunderstorm activity capable of producing damaging wind gusts and a couple of tornadoes will gradually spread across and northeast of the Vicksburg MS area, toward Greenwood and Tupelo, through 7-9 PM CDT.","Forecaster":"Kerr","ImageURI":"http://www.spc.noaa.gov/products/md/2018/mcd0190.gif","Polygon":[{"Lat":33.18,"Lon":-90.84},{"Lat":34.13,"Lon":-90.08},{"Lat":34.49,"Lon":-89.33},{"Lat":34.07,"Lon":-88.56},{"Lat":32.91,"Lon":-89.41},{"Lat":32.2,"Lon":-90.65},{"Lat":31.66,"Lon":-91.55},{"Lat":31.71,"Lon":-91.86},{"Lat":32.45,"Lon":-91.21},{"Lat":33.18,"Lon":-100.84}]}`
 
