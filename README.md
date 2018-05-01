@@ -47,8 +47,8 @@ MAG and REMARKS may be empty
 IMMEDIATE:
 2. implement SEL
 4. SVR
-5. redo and standardize all product schemas
 6. watch probabilities
+1. Break out LSR mag into value and units and measured/estimated
 
 2. Figure out structs vs classes: https://medium.com/@simplyianm/why-gos-structs-are-superior-to-class-based-inheritance-b661ba897c67
 3. Kafka errors on verbose testing
@@ -58,5 +58,3 @@ IMMEDIATE:
 4. changing retention time doesn't seem to purge topic
 6. Logging
 7. Mocking
-
-1. Break out LSR mag into value and units and measured/estimated

@@ -2,14 +2,14 @@ package main
 
 import "time"
 
-// ProductListResponse model
+// ProductListResponse type
 type ProductListResponse struct {
 	Context  []interface{} `json:"@context"`
 	Type     string        `json:"type"`
 	Features []Product     `json:"features"`
 }
 
-// Product model
+// Product type
 type Product struct {
 	URI             string    `json:"@id"`
 	ID              string    `json:"id"`
@@ -21,7 +21,7 @@ type Product struct {
 	ProductText     string    `json:"productText"`
 }
 
-// WxEvent model
+// WxEvent type
 type WxEvent struct {
 	Source   string
 	Details  interface{}
@@ -29,6 +29,7 @@ type WxEvent struct {
 	Summary  string
 }
 
+// Coordinates type
 type Coordinates struct {
 	Lat float32
 	Lon float32

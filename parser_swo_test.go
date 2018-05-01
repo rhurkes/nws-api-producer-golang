@@ -16,12 +16,15 @@ func TestBuildSWOEvent_Outlook(t *testing.T) {
 
 	expected := WxEvent{
 		Details: outlookDetails{
-			ProductCode: "swo",
-			ProductType: "dy1",
-			Valid:       "20Z",
-			Risk:        "no_severe",
-			Summary:     "Thunderstorms are possible from southern Oklahoma across the Ozarks region and over parts of the Florida Peninsula.",
-			Forecaster:  "Darrow",
+			Code:       "swo",
+			Issued:     1522524900,
+			Name:       "Severe Storm Outlook Narrative (AC)",
+			Wfo:        "KWNS",
+			SubCode:    "dy1",
+			Valid:      "20Z",
+			Risk:       "no_severe",
+			Summary:    "Thunderstorms are possible from southern Oklahoma across the Ozarks region and over parts of the Florida Peninsula.",
+			Forecaster: "Darrow",
 		},
 	}
 
@@ -37,7 +40,7 @@ func TestBuildSWOEvent_MD(t *testing.T) {
 	dataPath := "./data/swo-md.json"
 	json.Unmarshal(helpers.ReadJSONFromFile(dataPath), &product)
 
-	expected := `{"Source":"","Details":{"ProductCode":"swo","ProductType":"mcd","Number":"0190","Affected":"West central through north central Mississippi and adjacent portions of Arkansas/Louisiana","Concerning":"Concerning...Tornado Watch 23...","WatchInfo":"The severe weather threat for Tornado Watch 23 continues.","Valid":"2018-03-28T22:32:00Z","Expires":"2018-03-29T00:30:00Z","WFOs":["meg","jan"],"Summary":"A risk for thunderstorm activity capable of producing damaging wind gusts and a couple of tornadoes will gradually spread across and northeast of the Vicksburg MS area, toward Greenwood and Tupelo, through 7-9 PM CDT.","Forecaster":"Kerr","ImageURI":"http://www.spc.noaa.gov/products/md/2018/mcd0190.gif","Polygon":[{"Lat":33.18,"Lon":-90.84},{"Lat":34.13,"Lon":-90.08},{"Lat":34.49,"Lon":-89.33},{"Lat":34.07,"Lon":-88.56},{"Lat":32.91,"Lon":-89.41},{"Lat":32.2,"Lon":-90.65},{"Lat":31.66,"Lon":-91.55},{"Lat":31.71,"Lon":-91.86},{"Lat":32.45,"Lon":-91.21},{"Lat":33.18,"Lon":-100.84}]},"Ingested":"0001-01-01T00:00:00Z","Summary":""}`
+	expected := `{"Source":"","Details":{"Code":"swo","Issued":1522276380,"Name":"Severe Storm Outlook Narrative (AC)","Wfo":"KWNS","SubCode":"mcd","Number":"0190","Affected":"West central through north central Mississippi and adjacent portions of Arkansas/Louisiana","Concerning":"Concerning...Tornado Watch 23...","WatchInfo":"The severe weather threat for Tornado Watch 23 continues.","Valid":"2018-03-28T22:32:00Z","Expires":"2018-03-29T00:30:00Z","WFOs":["meg","jan"],"Summary":"A risk for thunderstorm activity capable of producing damaging wind gusts and a couple of tornadoes will gradually spread across and northeast of the Vicksburg MS area, toward Greenwood and Tupelo, through 7-9 PM CDT.","Forecaster":"Kerr","ImageURI":"http://www.spc.noaa.gov/products/md/2018/mcd0190.gif","Polygon":[{"Lat":33.18,"Lon":-90.84},{"Lat":34.13,"Lon":-90.08},{"Lat":34.49,"Lon":-89.33},{"Lat":34.07,"Lon":-88.56},{"Lat":32.91,"Lon":-89.41},{"Lat":32.2,"Lon":-90.65},{"Lat":31.66,"Lon":-91.55},{"Lat":31.71,"Lon":-91.86},{"Lat":32.45,"Lon":-91.21},{"Lat":33.18,"Lon":-100.84}]},"Ingested":"0001-01-01T00:00:00Z","Summary":""}`
 
 	result, err := buildSWOEvent(product)
 	marshalledResult, _ := json.Marshal(result)
@@ -67,12 +70,15 @@ func TestParseSWODY_Day1_No_Severe(t *testing.T) {
 	result := parseSWODY(product)
 
 	expected := outlookDetails{
-		ProductCode: "swo",
-		ProductType: "dy1",
-		Valid:       "20Z",
-		Risk:        "no_severe",
-		Summary:     "Thunderstorms are possible from southern Oklahoma across the Ozarks region and over parts of the Florida Peninsula.",
-		Forecaster:  "Darrow",
+		Code:       "swo",
+		Issued:     1522524900,
+		Name:       "Severe Storm Outlook Narrative (AC)",
+		Wfo:        "KWNS",
+		SubCode:    "dy1",
+		Valid:      "20Z",
+		Risk:       "no_severe",
+		Summary:    "Thunderstorms are possible from southern Oklahoma across the Ozarks region and over parts of the Florida Peninsula.",
+		Forecaster: "Darrow",
 	}
 
 	if !helpers.CompareObjects(result, expected) {
@@ -87,12 +93,15 @@ func TestParseSWODY_Day2_No_Severe(t *testing.T) {
 	result := parseSWODY(product)
 
 	expected := outlookDetails{
-		ProductCode: "swo",
-		ProductType: "dy2",
-		Valid:       "12Z",
-		Risk:        "no_severe",
-		Summary:     "Isolated thunderstorms may develop across parts of eastern Oklahoma to the Ozark Plateau and lower Tennessee Valley Sunday into Sunday night.  Other storms may develop across the southern and central Florida Peninsula on Sunday.",
-		Forecaster:  "Darrow",
+		Code:       "swo",
+		Issued:     1522516440,
+		Name:       "Severe Storm Outlook Narrative (AC)",
+		Wfo:        "KWNS",
+		SubCode:    "dy2",
+		Valid:      "12Z",
+		Risk:       "no_severe",
+		Summary:    "Isolated thunderstorms may develop across parts of eastern Oklahoma to the Ozark Plateau and lower Tennessee Valley Sunday into Sunday night.  Other storms may develop across the southern and central Florida Peninsula on Sunday.",
+		Forecaster: "Darrow",
 	}
 
 	if !helpers.CompareObjects(result, expected) {
@@ -107,12 +116,15 @@ func TestParseSWODY_Day3_No_Severe(t *testing.T) {
 	result := parseSWODY(product)
 
 	expected := outlookDetails{
-		ProductCode: "swo",
-		ProductType: "dy3",
-		Valid:       "",
-		Risk:        "no_severe",
-		Summary:     "Isolated thunderstorms are possible across portions of the southern Plains and Ozark Plateau as well as across the southern Florida Peninsula.",
-		Forecaster:  "Mosier",
+		Code:       "swo",
+		Issued:     1522307280,
+		Name:       "Severe Storm Outlook Narrative (AC)",
+		Wfo:        "KWNS",
+		SubCode:    "dy3",
+		Valid:      "",
+		Risk:       "no_severe",
+		Summary:    "Isolated thunderstorms are possible across portions of the southern Plains and Ozark Plateau as well as across the southern Florida Peninsula.",
+		Forecaster: "Mosier",
 	}
 
 	if !helpers.CompareObjects(result, expected) {
@@ -127,12 +139,15 @@ func TestParseSWODY_Day48(t *testing.T) {
 	result := parseSWODY(product)
 
 	expected := outlookDetails{
-		ProductCode: "swo",
-		ProductType: "d48",
-		Valid:       "",
-		Risk:        "unknown",
-		Summary:     "",
-		Forecaster:  "Peters",
+		Code:       "swo",
+		Issued:     1522487160,
+		Name:       "Severe Storm Outlook Narrative (AC)",
+		Wfo:        "KWNS",
+		SubCode:    "d48",
+		Valid:      "",
+		Risk:       "unknown",
+		Summary:    "",
+		Forecaster: "Peters",
 	}
 
 	if !helpers.CompareObjects(result, expected) {
@@ -145,12 +160,15 @@ func TestParseSWODY_Unknown_Day(t *testing.T) {
 	result := parseSWODY(product)
 
 	expected := outlookDetails{
-		ProductCode: "swo",
-		ProductType: "",
-		Valid:       "",
-		Risk:        "unknown",
-		Summary:     "",
-		Forecaster:  "",
+		Code:       "",
+		Issued:     -62135596800,
+		Name:       "",
+		Wfo:        "",
+		SubCode:    "",
+		Valid:      "",
+		Risk:       "unknown",
+		Summary:    "",
+		Forecaster: "",
 	}
 
 	if !helpers.CompareObjects(result, expected) {
@@ -162,7 +180,7 @@ func TestParseSWOMCD(t *testing.T) {
 	var product Product
 	responsePath := "./data/swo-md.json"
 	json.Unmarshal(helpers.ReadJSONFromFile(responsePath), &product)
-	expected := `{"ProductCode":"swo","ProductType":"mcd","Number":"0190","Affected":"West central through north central Mississippi and adjacent portions of Arkansas/Louisiana","Concerning":"Concerning...Tornado Watch 23...","WatchInfo":"The severe weather threat for Tornado Watch 23 continues.","Valid":"2018-03-28T22:32:00Z","Expires":"2018-03-29T00:30:00Z","WFOs":["meg","jan"],"Summary":"A risk for thunderstorm activity capable of producing damaging wind gusts and a couple of tornadoes will gradually spread across and northeast of the Vicksburg MS area, toward Greenwood and Tupelo, through 7-9 PM CDT.","Forecaster":"Kerr","ImageURI":"http://www.spc.noaa.gov/products/md/2018/mcd0190.gif","Polygon":[{"Lat":33.18,"Lon":-90.84},{"Lat":34.13,"Lon":-90.08},{"Lat":34.49,"Lon":-89.33},{"Lat":34.07,"Lon":-88.56},{"Lat":32.91,"Lon":-89.41},{"Lat":32.2,"Lon":-90.65},{"Lat":31.66,"Lon":-91.55},{"Lat":31.71,"Lon":-91.86},{"Lat":32.45,"Lon":-91.21},{"Lat":33.18,"Lon":-100.84}]}`
+	expected := `{"Code":"swo","Issued":1522276380,"Name":"Severe Storm Outlook Narrative (AC)","Wfo":"KWNS","SubCode":"mcd","Number":"0190","Affected":"West central through north central Mississippi and adjacent portions of Arkansas/Louisiana","Concerning":"Concerning...Tornado Watch 23...","WatchInfo":"The severe weather threat for Tornado Watch 23 continues.","Valid":"2018-03-28T22:32:00Z","Expires":"2018-03-29T00:30:00Z","WFOs":["meg","jan"],"Summary":"A risk for thunderstorm activity capable of producing damaging wind gusts and a couple of tornadoes will gradually spread across and northeast of the Vicksburg MS area, toward Greenwood and Tupelo, through 7-9 PM CDT.","Forecaster":"Kerr","ImageURI":"http://www.spc.noaa.gov/products/md/2018/mcd0190.gif","Polygon":[{"Lat":33.18,"Lon":-90.84},{"Lat":34.13,"Lon":-90.08},{"Lat":34.49,"Lon":-89.33},{"Lat":34.07,"Lon":-88.56},{"Lat":32.91,"Lon":-89.41},{"Lat":32.2,"Lon":-90.65},{"Lat":31.66,"Lon":-91.55},{"Lat":31.71,"Lon":-91.86},{"Lat":32.45,"Lon":-91.21},{"Lat":33.18,"Lon":-100.84}]}`
 
 	result := parseSWOMCD(product)
 	marshalledResult, _ := json.Marshal(result)

@@ -11,10 +11,10 @@ import (
 )
 
 type lsrDetails struct {
-	// Standard fields - excluding ProductText
+	// Standard fields
 	Code   string
-	Name   string
 	Issued time.Time
+	Name   string
 	Wfo    string
 
 	// Derived fields

@@ -22,28 +22,40 @@ var polygonRegex = regexp.MustCompile(`\d{8}`)
 var wfoRegex = regexp.MustCompile(`ATTN\.{3}WFO\.{3}((?:\w{3}\.{3})+)`)
 
 type outlookDetails struct {
-	ProductCode string
-	ProductType string // dy1, dy2, dy3, d`48
-	Valid       string // 0600Z, 1300Z, 1630Z, 1730Z, 2000Z, 0100Z
-	Risk        string
-	Summary     string
-	Forecaster  string
+	// Standard fields
+	Code   string
+	Issued int64
+	Name   string
+	Wfo    string
+
+	// Derived fields
+	SubCode    string // dy1, dy2, dy3, d48
+	Valid      string // 0600Z, 1300Z, 1630Z, 1730Z, 2000Z, 0100Z
+	Risk       string
+	Summary    string
+	Forecaster string
 }
 
 type mdDetails struct {
-	ProductCode string
-	ProductType string
-	Number      string
-	Affected    string
-	Concerning  string
-	WatchInfo   string
-	Valid       time.Time
-	Expires     time.Time
-	WFOs        []string
-	Summary     string
-	Forecaster  string
-	ImageURI    string
-	Polygon     []Coordinates
+	// Standard fields
+	Code   string
+	Issued int64
+	Name   string
+	Wfo    string
+
+	// Derived fields
+	SubCode    string
+	Number     string
+	Affected   string
+	Concerning string
+	WatchInfo  string
+	Valid      time.Time
+	Expires    time.Time
+	WFOs       []string
+	Summary    string
+	Forecaster string
+	ImageURI   string
+	Polygon    []Coordinates
 }
 
 // Parses products and builds events for Severe Storm Outlook Narratives
@@ -68,7 +80,13 @@ func buildSWOEvent(product Product) (WxEvent, error) {
 func parseSWOMCD(product Product) mdDetails {
 	text := product.ProductText
 	year := product.IssuanceTime.Year()
-	details := mdDetails{ProductCode: "swo", ProductType: "mcd"}
+	details := mdDetails{
+		Code:    strings.ToLower(product.ProductCode),
+		SubCode: "mcd",
+		Issued:  product.IssuanceTime.Unix(),
+		Name:    product.ProductName,
+		Wfo:     product.IssuingOffice,
+	}
 
 	numberMatch := numberRegex.FindStringSubmatch(text)
 	if len(numberMatch) == 2 {
@@ -183,22 +201,27 @@ func buildPolygon(matches []string) []Coordinates {
 
 func parseSWODY(product Product) outlookDetails {
 	text := product.ProductText
-	details := outlookDetails{ProductCode: "swo"}
+	details := outlookDetails{
+		Code:   strings.ToLower(product.ProductCode),
+		Issued: product.IssuanceTime.Unix(),
+		Name:   product.ProductName,
+		Wfo:    product.IssuingOffice,
+	}
 
 	switch product.WmoCollectiveID {
 	case "ACUS01":
-		details.ProductType = "dy1"
+		details.SubCode = "dy1"
 	case "ACUS02":
-		details.ProductType = "dy2"
+		details.SubCode = "dy2"
 	case "ACUS03":
-		details.ProductType = "dy3"
+		details.SubCode = "dy3"
 	case "ACUS48":
-		details.ProductType = "d48"
+		details.SubCode = "d48"
 	default:
 		fmt.Println(fmt.Sprintf("Unknown WmoCollectiveID: '%s'", product.WmoCollectiveID))
 	}
 
-	if details.ProductType == "dy1" || details.ProductType == "dy2" {
+	if details.SubCode == "dy1" || details.SubCode == "dy2" {
 		validMatch := validRegex.FindAllStringSubmatch(text, -1)
 		if len(validMatch) == 1 && len(validMatch[0]) == 4 {
 			details.Valid = fmt.Sprintf("%sZ", validMatch[0][1][2:4])
@@ -212,7 +235,7 @@ func parseSWODY(product Product) outlookDetails {
 
 	details.Risk = getRisk(text)
 
-	if details.ProductType != "d48" {
+	if details.SubCode != "d48" {
 		summaryMatch := outlookSummaryRegex.FindStringSubmatch(text)
 		if len(summaryMatch) == 2 {
 			details.Summary = strings.Replace(summaryMatch[1], "\n", " ", -1)
