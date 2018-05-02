@@ -53,6 +53,12 @@ var (
 func getMagnitude(line string) magnitude {
 	parsedMagnitude := magnitude{}
 	normalizedLine := helpers.NormalizeString(line, false)
+
+	// It's normal for some LSRs, like for wind damage, to be empty
+	if len(normalizedLine) == 0 {
+		return parsedMagnitude
+	}
+
 	match := magnitudeRegex.FindStringSubmatch(normalizedLine)
 	if len(match) == 4 {
 		parsedMagnitude.Measured = match[1] == "m"

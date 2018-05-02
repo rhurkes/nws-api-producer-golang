@@ -26,7 +26,7 @@ func buildSVSEvent(product Product) (WxEvent, error) {
 	lowerCaseText := strings.ToLower(product.ProductText)
 
 	if !strings.Contains(lowerCaseText, "tornado emergency") {
-		return wxEvent, errors.New("Skipping since not tornado emergency")
+		return wxEvent, errors.New("Ignoring since not tornado emergency: svs " + product.ID)
 	}
 
 	wxEvent.Details = &svsDetails{

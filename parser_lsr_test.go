@@ -116,6 +116,8 @@ func TestGetLSRTimezoneOffset(t *testing.T) {
 func TestGetMagnitude(t *testing.T) {
 	tests := map[string]helpers.TestParameters{}
 	tests["Empty String"] = helpers.TestParameters{Input: "", Expected: magnitude{}}
+	tests["Wind Damage"] = helpers.TestParameters{Input: "                 ", Expected: magnitude{}}
+	tests["Unparsable String"] = helpers.TestParameters{Input: "UNPARSABLE", Expected: magnitude{}}
 	tests["Estimated Hail"] = helpers.TestParameters{Input: "E4.50 INCH", Expected: magnitude{Measured: false, Value: 4.5, Units: "inch"}}
 	tests["Measured Hail"] = helpers.TestParameters{Input: "M0.75 INCH", Expected: magnitude{Measured: true, Value: .75, Units: "inch"}}
 	tests["Estimated Wind"] = helpers.TestParameters{Input: "E88 MPH", Expected: magnitude{Measured: false, Value: 88, Units: "mph"}}

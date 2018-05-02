@@ -17,6 +17,7 @@ func TestBuildSVR(t *testing.T) {
 		Issued:    1523658960,
 		Name:      "Severe Thunderstorm Warning",
 		Wfo:       "KDMX",
+		IsPDS:     false,
 		IssuedFor: "western greene county in west central iowa, eastern carroll county in west central iowa",
 		Polygon: []Coordinates{
 			{Lat: 42.21, Lon: -94.75}, {Lat: 42.21, Lon: -94.34}, {Lat: 41.91, Lon: -94.52}, {Lat: 41.91, Lon: -94.75},
@@ -32,5 +33,14 @@ func TestBuildSVR(t *testing.T) {
 	result, err := buildSVREvent(product)
 	if err != nil || !helpers.CompareObjects(result, expected) {
 		t.Error("TestBuildSVR failed")
+	}
+}
+
+func TestDeriveSVRDetailsIsPDS(t *testing.T) {
+	input := "THIS IS A PARTICULARLY DANGEROUS SITUATION."
+
+	result := deriveSVRDetails(input, svrDetails{})
+	if !result.IsPDS {
+		t.Error("TestDeriveSVRDetailsIsPDS failed")
 	}
 }

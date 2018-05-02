@@ -13,6 +13,7 @@ type svrDetails struct {
 	Wfo    string
 
 	// Derived fields
+	IsPDS         bool
 	IssuedFor     string
 	Polygon       []Coordinates
 	Location      Coordinates
@@ -49,6 +50,7 @@ func deriveSVRDetails(text string, details svrDetails) svrDetails {
 	details.MotionDegrees = movement.Degrees
 	details.MotionKnots = movement.Knots
 	details.IssuedFor = getWarningFor(lowerCaseText)
+	details.IsPDS = strings.Contains(lowerCaseText, "particularly dangerous situation")
 
 	return details
 }

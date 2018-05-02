@@ -26,12 +26,16 @@ TODO
 - `SEV` Shows coordinates for all active watches.
 
 # TODO
-- Break out LSR mag into value and units and measured/estimated
+- What has the watch coords?
+- implement flood things
+- implement isPDS for all warnings
+- Finish testing main/kafka/api stuff 
+- Logging
+- Mocking
+1. Figure out project structure
 2. Figure out structs vs classes: https://medium.com/@simplyianm/why-gos-structs-are-superior-to-class-based-inheritance-b661ba897c67
 3. Kafka errors on verbose testing
 %3|1522520247.123|FAIL|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Connect to ipv6#[::1]:9092 failed: Connection refused
 %3|1522520247.123|ERROR|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: localhost:9092/bootstrap: Connect to ipv6#[::1]:9092 failed: Connection refused
 %3|1522520247.123|ERROR|rdkafka#producer-1| [thrd:localhost:9092/bootstrap]: 1/1 brokers are down
 4. changing retention time doesn't seem to purge topic
-6. Logging
-7. Mocking

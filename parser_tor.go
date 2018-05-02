@@ -15,15 +15,16 @@ type torDetails struct {
 	Wfo    string
 
 	// Derived fields
-	IsEmergency   bool
-	IsObserved    bool
-	Source        string
-	Description   string
-	Polygon       []Coordinates
-	Location      Coordinates
-	Time          string
-	MotionDegrees int
-	MotionKnots   int
+	IsTornadoEmergency bool
+	IsPDS              bool
+	IsObserved         bool
+	Source             string
+	Description        string
+	Polygon            []Coordinates
+	Location           Coordinates
+	Time               string
+	MotionDegrees      int
+	MotionKnots        int
 }
 
 var sourceRegex = regexp.MustCompile(`\n{2}\s{2}source...(.+)\.\s?\n{2}`)
@@ -50,7 +51,8 @@ func buildTOREvent(product Product) (WxEvent, error) {
 
 func deriveTORDetails(text string, details torDetails) torDetails {
 	lowerCaseText := strings.ToLower(text)
-	details.IsEmergency = strings.Contains(lowerCaseText, "tornado emergency")
+	details.IsTornadoEmergency = strings.Contains(lowerCaseText, "tornado emergency")
+	details.IsPDS = strings.Contains(lowerCaseText, "particularly dangerous situation")
 	details.IsObserved = strings.Contains(lowerCaseText, "tornado...observed")
 	details.Source = getSource(lowerCaseText)
 	details.Description = getDescription(lowerCaseText)
