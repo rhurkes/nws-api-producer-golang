@@ -3,14 +3,12 @@ package main
 import (
 	"encoding/json"
 	"testing"
-
-	"github.com/rhurkes/wxNwsProducer/helpers"
 )
 
 func TestBuildSVR(t *testing.T) {
 	var product Product
 	svsPath := "./data/svr.json"
-	json.Unmarshal(helpers.ReadJSONFromFile(svsPath), &product)
+	json.Unmarshal(ReadJSONFromFile(svsPath), &product)
 
 	expectedDetails := svrDetails{
 		Code:      "svr",
@@ -31,7 +29,7 @@ func TestBuildSVR(t *testing.T) {
 	expected := WxEvent{Details: expectedDetails}
 
 	result, err := buildSVREvent(product)
-	if err != nil || !helpers.CompareObjects(result, expected) {
+	if err != nil || !CompareObjects(result, expected) {
 		t.Error("TestBuildSVR failed")
 	}
 }

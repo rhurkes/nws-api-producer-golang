@@ -6,14 +6,12 @@ import (
 	"strings"
 	"testing"
 	"time"
-
-	"github.com/rhurkes/wxNwsProducer/helpers"
 )
 
 func TestProcessLSRProduct_Valid_LSR(t *testing.T) {
 	var product Product
 	lsrHailRemarksPath := "./data/lsr-hail-remarks.json"
-	json.Unmarshal(helpers.ReadJSONFromFile(lsrHailRemarksPath), &product)
+	json.Unmarshal(ReadJSONFromFile(lsrHailRemarksPath), &product)
 	reported, _ := time.Parse(time.RFC3339, "2018-03-26T19:55:00-05:00")
 	issued, _ := time.Parse(time.RFC3339, "2018-03-27T01:16:00Z")
 
@@ -39,7 +37,7 @@ func TestProcessLSRProduct_Valid_LSR(t *testing.T) {
 	expected := WxEvent{Details: expectedDetails}
 
 	result, err := processLSRProduct(product)
-	if err != nil || !helpers.CompareObjects(result, expected) {
+	if err != nil || !CompareObjects(result, expected) {
 		t.Error("TestProcessLSRProduct_Valid_LSR failed")
 	}
 }
@@ -65,7 +63,7 @@ func TestProcessLSRProduct_Summary(t *testing.T) {
 func TestProcessLSRProduct_No_Remarks_Flag(t *testing.T) {
 	var product Product
 	lsrHailRemarksPath := "./data/lsr-hail-remarks.json"
-	json.Unmarshal(helpers.ReadJSONFromFile(lsrHailRemarksPath), &product)
+	json.Unmarshal(ReadJSONFromFile(lsrHailRemarksPath), &product)
 	product.ProductText = strings.Replace(product.ProductText, "..REMARKS..", "", 1)
 
 	_, err := processLSRProduct(product)
@@ -77,7 +75,7 @@ func TestProcessLSRProduct_No_Remarks_Flag(t *testing.T) {
 func TestProcessLSRProduct_Older_than_Threshold(t *testing.T) {
 	var product Product
 	lsrHailRemarksPath := "./data/lsr-hail-remarks.json"
-	json.Unmarshal(helpers.ReadJSONFromFile(lsrHailRemarksPath), &product)
+	json.Unmarshal(ReadJSONFromFile(lsrHailRemarksPath), &product)
 	product.ProductText = strings.Replace(product.ProductText, "0755 PM", "0655 PM", 1)
 
 	_, err := processLSRProduct(product)
@@ -89,7 +87,7 @@ func TestProcessLSRProduct_Older_than_Threshold(t *testing.T) {
 func TestProcessLSRProduct_Invalid_Reported_Time(t *testing.T) {
 	var product Product
 	lsrHailRemarksPath := "./data/lsr-hail-remarks.json"
-	json.Unmarshal(helpers.ReadJSONFromFile(lsrHailRemarksPath), &product)
+	json.Unmarshal(ReadJSONFromFile(lsrHailRemarksPath), &product)
 	product.ProductText = strings.Replace(product.ProductText, "0755 PM", "garbage", 1)
 
 	_, err := processLSRProduct(product)
@@ -99,9 +97,9 @@ func TestProcessLSRProduct_Invalid_Reported_Time(t *testing.T) {
 }
 
 func TestGetLSRTimezoneOffset(t *testing.T) {
-	tests := map[string]helpers.TestParameters{}
-	tests["Empty String"] = helpers.TestParameters{Input: "", Expected: "0000"}
-	tests["Valid Timezone"] = helpers.TestParameters{Input: "816 PM CDT MON MAR 26 2018", Expected: "0500"}
+	tests := map[string]TestParameters{}
+	tests["Empty String"] = TestParameters{Input: "", Expected: "0000"}
+	tests["Valid Timezone"] = TestParameters{Input: "816 PM CDT MON MAR 26 2018", Expected: "0500"}
 
 	for testName, params := range tests {
 		result := getLSRTimezoneOffset(params.Input)
@@ -114,13 +112,13 @@ func TestGetLSRTimezoneOffset(t *testing.T) {
 }
 
 func TestGetMagnitude(t *testing.T) {
-	tests := map[string]helpers.TestParameters{}
-	tests["Empty String"] = helpers.TestParameters{Input: "", Expected: magnitude{}}
-	tests["Wind Damage"] = helpers.TestParameters{Input: "                 ", Expected: magnitude{}}
-	tests["Unparsable String"] = helpers.TestParameters{Input: "UNPARSABLE", Expected: magnitude{}}
-	tests["Estimated Hail"] = helpers.TestParameters{Input: "E4.50 INCH", Expected: magnitude{Measured: false, Value: 4.5, Units: "inch"}}
-	tests["Measured Hail"] = helpers.TestParameters{Input: "M0.75 INCH", Expected: magnitude{Measured: true, Value: .75, Units: "inch"}}
-	tests["Estimated Wind"] = helpers.TestParameters{Input: "E88 MPH", Expected: magnitude{Measured: false, Value: 88, Units: "mph"}}
+	tests := map[string]TestParameters{}
+	tests["Empty String"] = TestParameters{Input: "", Expected: magnitude{}}
+	tests["Wind Damage"] = TestParameters{Input: "                 ", Expected: magnitude{}}
+	tests["Unparsable String"] = TestParameters{Input: "UNPARSABLE", Expected: magnitude{}}
+	tests["Estimated Hail"] = TestParameters{Input: "E4.50 INCH", Expected: magnitude{Measured: false, Value: 4.5, Units: "inch"}}
+	tests["Measured Hail"] = TestParameters{Input: "M0.75 INCH", Expected: magnitude{Measured: true, Value: .75, Units: "inch"}}
+	tests["Estimated Wind"] = TestParameters{Input: "E88 MPH", Expected: magnitude{Measured: false, Value: 88, Units: "mph"}}
 
 	for testName, params := range tests {
 		result := getMagnitude(params.Input)

@@ -4,14 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"testing"
-
-	"github.com/rhurkes/wxNwsProducer/helpers"
 )
 
 func TestBuildTorEvent(t *testing.T) {
 	var product Product
 	path := "./data/tor-radar-indicated.json"
-	json.Unmarshal(helpers.ReadJSONFromFile(path), &product)
+	json.Unmarshal(ReadJSONFromFile(path), &product)
 
 	expectedDetails := torDetails{
 		Code:               "tor",
@@ -35,7 +33,7 @@ func TestBuildTorEvent(t *testing.T) {
 	expected := WxEvent{Details: expectedDetails}
 
 	result, err := buildTOREvent(product)
-	if err != nil || !helpers.CompareObjects(result, expected) {
+	if err != nil || !CompareObjects(result, expected) {
 		t.Error("TestBuildTorEvent failed")
 	}
 }
@@ -68,14 +66,14 @@ func TestDeriveTORDetailsIsObserved(t *testing.T) {
 }
 
 func TestGetSource(t *testing.T) {
-	tests := map[string]helpers.TestParameters{}
-	tests["Empty string"] = helpers.TestParameters{Input: "", Expected: "unknown"}
-	tests["Happy path"] = helpers.TestParameters{Input: "\n\n  source...Weather spotters confirmed tornado. \n\n", Expected: "weather spotters confirmed tornado"}
+	tests := map[string]TestParameters{}
+	tests["Empty string"] = TestParameters{Input: "", Expected: "unknown"}
+	tests["Happy path"] = TestParameters{Input: "\n\n  source...Weather spotters confirmed tornado. \n\n", Expected: "weather spotters confirmed tornado"}
 
 	for testName, params := range tests {
 		result := getSource(params.Input)
 
-		if !helpers.CompareObjects(result, params.Expected) {
+		if !CompareObjects(result, params.Expected) {
 			msg := fmt.Sprintf("result: '%v', Expected: '%s'", result, params.Expected)
 			t.Errorf("TestGetSource - %s failed. %s", testName, msg)
 		}
@@ -83,14 +81,14 @@ func TestGetSource(t *testing.T) {
 }
 
 func TestGetDescription(t *testing.T) {
-	tests := map[string]helpers.TestParameters{}
-	tests["Empty string"] = helpers.TestParameters{Input: "", Expected: ""}
-	tests["Happy path"] = helpers.TestParameters{Input: `\n\* at 709 pm\n\n`, Expected: ""}
+	tests := map[string]TestParameters{}
+	tests["Empty string"] = TestParameters{Input: "", Expected: ""}
+	tests["Happy path"] = TestParameters{Input: `\n\* at 709 pm\n\n`, Expected: ""}
 
 	for testName, params := range tests {
 		result := getDescription(params.Input)
 
-		if !helpers.CompareObjects(result, params.Expected) {
+		if !CompareObjects(result, params.Expected) {
 			msg := fmt.Sprintf("result: '%v', Expected: '%s'", result, params.Expected)
 			t.Errorf("TestGetDescription - %s failed. %s", testName, msg)
 		}
@@ -98,15 +96,15 @@ func TestGetDescription(t *testing.T) {
 }
 
 func TestGetPolygon(t *testing.T) {
-	tests := map[string]helpers.TestParameters{}
-	tests["Empty string"] = helpers.TestParameters{Input: "", Expected: nil}
-	tests["Happy path"] = helpers.TestParameters{Input: "lat...lon 3267 9078 3268 0079 time...", Expected: []Coordinates{{Lat: 32.67, Lon: -90.78}, {Lat: 32.68, Lon: -100.79}}}
-	tests["No coords"] = helpers.TestParameters{Input: "lat...lon NO COORDS time...", Expected: nil}
+	tests := map[string]TestParameters{}
+	tests["Empty string"] = TestParameters{Input: "", Expected: nil}
+	tests["Happy path"] = TestParameters{Input: "lat...lon 3267 9078 3268 0079 time...", Expected: []Coordinates{{Lat: 32.67, Lon: -90.78}, {Lat: 32.68, Lon: -100.79}}}
+	tests["No coords"] = TestParameters{Input: "lat...lon NO COORDS time...", Expected: nil}
 
 	for testName, params := range tests {
 		result := getPolygon(params.Input)
 
-		if !helpers.CompareObjects(result, params.Expected) {
+		if !CompareObjects(result, params.Expected) {
 			msg := fmt.Sprintf("result: '%v', Expected: '%s'", result, params.Expected)
 			t.Errorf("TestGetPolygon - %s failed. %s", testName, msg)
 		}

@@ -4,14 +4,12 @@ import (
 	"encoding/json"
 	"testing"
 	"time"
-
-	"github.com/rhurkes/wxNwsProducer/helpers"
 )
 
 func TestBuildAFDEvent(t *testing.T) {
 	var product Product
 	afdPath := "./data/afd-mpx.json"
-	json.Unmarshal(helpers.ReadJSONFromFile(afdPath), &product)
+	json.Unmarshal(ReadJSONFromFile(afdPath), &product)
 	product.ProductText = "afd\ntext"
 	productTime, _ := time.Parse(time.RFC3339, "2018-04-14T02:07:00Z")
 
@@ -26,7 +24,7 @@ func TestBuildAFDEvent(t *testing.T) {
 	expected := WxEvent{Details: expectedDetails}
 
 	result, err := buildAFDEvent(product)
-	if err != nil || !helpers.CompareObjects(result, expected) {
+	if err != nil || !CompareObjects(result, expected) {
 		t.Error("TestBuildAFDEvent failed")
 	}
 }

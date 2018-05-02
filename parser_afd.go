@@ -2,8 +2,6 @@ package main
 
 import (
 	"time"
-
-	"github.com/rhurkes/wxNwsProducer/helpers"
 )
 
 type afdDetails struct {
@@ -23,7 +21,7 @@ func buildAFDEvent(product Product) (WxEvent, error) {
 		Issued: product.IssuanceTime,
 		Name:   product.ProductName,
 		Wfo:    product.IssuingOffice,
-		Text:   helpers.NormalizeString(product.ProductText, false),
+		Text:   normalizeString(product.ProductText, false),
 	}
 
 	return wxEvent, nil

@@ -3,8 +3,6 @@ package main
 import (
 	"errors"
 	"strings"
-
-	"github.com/rhurkes/wxNwsProducer/helpers"
 )
 
 type svsDetails struct {
@@ -34,7 +32,7 @@ func buildSVSEvent(product Product) (WxEvent, error) {
 		Issued:             product.IssuanceTime.Unix(),
 		Name:               product.ProductName,
 		Wfo:                product.IssuingOffice,
-		Text:               helpers.NormalizeString(product.ProductText, true),
+		Text:               normalizeString(product.ProductText, true),
 		IsTornadoEmergency: true,
 	}
 

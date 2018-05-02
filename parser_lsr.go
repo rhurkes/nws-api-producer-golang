@@ -10,8 +10,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/rhurkes/wxNwsProducer/helpers"
 )
 
 type lsrDetails struct {
@@ -52,7 +50,7 @@ var (
 
 func getMagnitude(line string) magnitude {
 	parsedMagnitude := magnitude{}
-	normalizedLine := helpers.NormalizeString(line, false)
+	normalizedLine := normalizeString(line, false)
 
 	// It's normal for some LSRs, like for wind damage, to be empty
 	if len(normalizedLine) == 0 {
@@ -78,7 +76,7 @@ func getLSRTimezoneOffset(line string) string {
 	result := timezoneRegex.FindStringSubmatch(line)
 
 	if len(result) == 2 {
-		offset = helpers.GetTimezoneOffset(result[1])
+		offset = GetTimezoneOffset(result[1])
 	} else {
 		fmt.Println(fmt.Sprintf("Unable to parse timezone offset: '%s'", line))
 	}
@@ -114,17 +112,17 @@ func processLSRProduct(product Product) (WxEvent, error) {
 	// 2 lines after ..REMARKS.. contains TIME/EVENT/CITY LOCATION/LAT/LON
 	currentLine := lines[remarksLineIndex+2]
 	rawTime := currentLine[0:7]
-	details.Type = helpers.NormalizeString(currentLine[12:29], false)
-	details.Location = helpers.NormalizeString(currentLine[29:53], false)
-	details.Lat = helpers.NormalizeFloat(currentLine[53:58])
-	details.Lon = helpers.NormalizeFloat(currentLine[59:66]) * -1
+	details.Type = normalizeString(currentLine[12:29], false)
+	details.Location = normalizeString(currentLine[29:53], false)
+	details.Lat = normalizeFloat(currentLine[53:58])
+	details.Lon = normalizeFloat(currentLine[59:66]) * -1
 
 	// 3 lines after ..REMARKS.. contains DATE/MAG/COUNTY/ST/SOURCE
 	currentLine = lines[remarksLineIndex+3]
 	rawTime = fmt.Sprintf("%s %s", currentLine[0:10], rawTime)
-	details.County = helpers.NormalizeString(currentLine[29:48], false)
-	details.State = helpers.NormalizeString(currentLine[48:50], false)
-	details.Source = helpers.NormalizeString(currentLine[50:], false)
+	details.County = normalizeString(currentLine[29:48], false)
+	details.State = normalizeString(currentLine[48:50], false)
+	details.Source = normalizeString(currentLine[50:], false)
 
 	parsedMagnitude := getMagnitude(currentLine[12:29])
 	details.MagMeasured = parsedMagnitude.Measured
@@ -154,7 +152,7 @@ func processLSRProduct(product Product) (WxEvent, error) {
 		return wxEvent, fmt.Errorf("Unable to format local reported time: '%s'", rawTime)
 	}
 
-	details.Remarks = helpers.NormalizeString(remarks, false)
+	details.Remarks = normalizeString(remarks, false)
 
 	// Set standard fields - excluding ProductText
 	details.Code = strings.ToLower(product.ProductCode)

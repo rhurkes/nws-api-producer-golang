@@ -3,8 +3,6 @@ package main
 import (
 	"regexp"
 	"strings"
-
-	"github.com/rhurkes/wxNwsProducer/helpers"
 )
 
 type torDetails struct {
@@ -71,7 +69,7 @@ func getSource(text string) string {
 	source := "unknown"
 	sourceMatch := sourceRegex.FindStringSubmatch(text)
 	if len(sourceMatch) == 2 {
-		source = helpers.NormalizeString(sourceMatch[1], false)
+		source = normalizeString(sourceMatch[1], false)
 	}
 
 	return source
@@ -81,7 +79,7 @@ func getDescription(text string) string {
 	description := ""
 	descriptionMatch := descriptionRegex.FindStringSubmatch(text)
 	if len(descriptionMatch) == 2 {
-		description = helpers.NormalizeString(descriptionMatch[1], false)
+		description = normalizeString(descriptionMatch[1], false)
 	}
 
 	return description

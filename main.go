@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"go.uber.org/zap"
 )
 
 // Configuration
@@ -140,15 +141,18 @@ func fetchAndProcessData(productType string) {
 }
 
 func main() {
+	logger, _ := zap.NewProduction()
+	defer logger.Sync()
+	logger.Info("Initializing...")
+
 	if producerErr != nil {
+		log.Fatal("Unable to start producer", producerErr)
 		panic(producerErr)
 	}
 
 	ticker := time.NewTicker(requestDelayMs * time.Millisecond)
 	for range ticker.C {
-		t := time.Now()
-		fmt.Println(fmt.Sprintf("[%s] polling...", t.Format(time.RFC3339)))
-		//go fetchAndProcessData("afd")
+		go fetchAndProcessData("afd")
 		go fetchAndProcessData("lsr")
 		go fetchAndProcessData("sel")
 		go fetchAndProcessData("svr")

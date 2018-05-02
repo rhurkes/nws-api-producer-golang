@@ -3,14 +3,12 @@ package main
 import (
 	"encoding/json"
 	"testing"
-
-	"github.com/rhurkes/wxNwsProducer/helpers"
 )
 
 func TestBuildSVSEventNotTornadoEmergency(t *testing.T) {
 	var product Product
 	svsPath := "./data/svs-svr-canceled.json"
-	json.Unmarshal(helpers.ReadJSONFromFile(svsPath), &product)
+	json.Unmarshal(ReadJSONFromFile(svsPath), &product)
 
 	_, err := buildSVSEvent(product)
 	if err == nil {
@@ -21,7 +19,7 @@ func TestBuildSVSEventNotTornadoEmergency(t *testing.T) {
 func TestBuildSVSEventIsTornadoEmergency(t *testing.T) {
 	var product Product
 	svsPath := "./data/svs-svr-canceled.json"
-	json.Unmarshal(helpers.ReadJSONFromFile(svsPath), &product)
+	json.Unmarshal(ReadJSONFromFile(svsPath), &product)
 	product.ProductText = "THIS IS A TORNADO EMERGENCY"
 
 	expectedDetails := svsDetails{
@@ -36,7 +34,7 @@ func TestBuildSVSEventIsTornadoEmergency(t *testing.T) {
 	expected := WxEvent{Details: expectedDetails}
 
 	result, err := buildSVSEvent(product)
-	if err != nil || !helpers.CompareObjects(result, expected) {
+	if err != nil || !CompareObjects(result, expected) {
 		t.Error("TestBuildSVSEventIsTornadoEmergency failed")
 	}
 }

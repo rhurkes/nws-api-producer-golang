@@ -8,9 +8,9 @@ import (
 )
 
 func TestNormalizeString(t *testing.T) {
-	tests := map[string]helpers.TestParameters{}
-	tests["Empty String"] = helpers.TestParameters{Input: "", Expected: ""}
-	tests["Uppercase and Spaces"] = helpers.TestParameters{Input: " STUFF ", Expected: "stuff"}
+	tests := map[string]TestParameters{}
+	tests["Empty String"] = TestParameters{Input: "", Expected: ""}
+	tests["Uppercase and Spaces"] = TestParameters{Input: " STUFF ", Expected: "stuff"}
 
 	for testName, params := range tests {
 		result := normalizeString(params.Input, false)
@@ -23,9 +23,9 @@ func TestNormalizeString(t *testing.T) {
 }
 
 func TestNormalizeStringPreserveCase(t *testing.T) {
-	tests := map[string]helpers.TestParameters{}
-	tests["Uppercase"] = helpers.TestParameters{Input: "STUFF", Expected: "STUFF"}
-	tests["Lowercase"] = helpers.TestParameters{Input: "stuff", Expected: "stuff"}
+	tests := map[string]TestParameters{}
+	tests["Uppercase"] = TestParameters{Input: "STUFF", Expected: "STUFF"}
+	tests["Lowercase"] = TestParameters{Input: "stuff", Expected: "stuff"}
 
 	for testName, params := range tests {
 		result := normalizeString(params.Input, true)
@@ -38,12 +38,12 @@ func TestNormalizeStringPreserveCase(t *testing.T) {
 }
 
 func TestNormalizeFloat(t *testing.T) {
-	tests := map[string]helpers.TestParameters{}
-	tests["Empty String"] = helpers.TestParameters{Input: "", Expected: float32(0)}
-	tests["Invalid String"] = helpers.TestParameters{Input: "stuff", Expected: float32(0)}
-	tests["0"] = helpers.TestParameters{Input: "0", Expected: float32(0)}
-	tests["-1"] = helpers.TestParameters{Input: "-1", Expected: float32(-1)}
-	tests["100"] = helpers.TestParameters{Input: "100", Expected: float32(100)}
+	tests := map[string]TestParameters{}
+	tests["Empty String"] = TestParameters{Input: "", Expected: float32(0)}
+	tests["Invalid String"] = TestParameters{Input: "stuff", Expected: float32(0)}
+	tests["0"] = TestParameters{Input: "0", Expected: float32(0)}
+	tests["-1"] = TestParameters{Input: "-1", Expected: float32(-1)}
+	tests["100"] = TestParameters{Input: "100", Expected: float32(100)}
 
 	for testName, params := range tests {
 		result := normalizeFloat(params.Input)
