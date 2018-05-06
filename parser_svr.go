@@ -15,8 +15,8 @@ type svrDetails struct {
 	// Derived fields
 	IsPDS         bool
 	IssuedFor     string
-	Polygon       []Coordinates
-	Location      Coordinates
+	Polygon       []coordinates
+	Location      coordinates
 	Time          string
 	MotionDegrees int
 	MotionKnots   int
@@ -25,8 +25,8 @@ type svrDetails struct {
 var warningForRegex = regexp.MustCompile(`\n\n\*[\s|\S]+?warning for\.{3}\n([\s|\S]+?)\n\n`)
 
 // Parses products and builds events for Severe Thunderstorm Warnings
-func buildSVREvent(product Product) (WxEvent, error) {
-	wxEvent := WxEvent{}
+func buildSVREvent(product product) (wxEvent, error) {
+	wxEvent := wxEvent{}
 
 	details := svrDetails{
 		Code:   strings.ToLower(product.ProductCode),

@@ -18,8 +18,8 @@ type torDetails struct {
 	IsObserved         bool
 	Source             string
 	Description        string
-	Polygon            []Coordinates
-	Location           Coordinates
+	Polygon            []coordinates
+	Location           coordinates
 	Time               string
 	MotionDegrees      int
 	MotionKnots        int
@@ -32,8 +32,8 @@ var latLonLineRegex = regexp.MustCompile(`lat...lon\s([\s|\S]+)time\.{3}`)
 var latLonRegex = regexp.MustCompile(`(\d{4}\s\d{4})`)
 
 // Parses products and builds events for Tornado Warnings
-func buildTOREvent(product Product) (WxEvent, error) {
-	wxEvent := WxEvent{}
+func buildTOREvent(product product) (wxEvent, error) {
+	wxEvent := wxEvent{}
 
 	details := torDetails{
 		Code:   strings.ToLower(product.ProductCode),

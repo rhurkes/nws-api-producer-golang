@@ -5,13 +5,35 @@ import (
 	"testing"
 )
 
+func TestGetNWSProductCode(t *testing.T) {
+	tests := map[string]TestParameters{}
+	tests["AFD"] = TestParameters{Input: AreaForecastDiscussion, Expected: "afd"}
+	tests["LSR"] = TestParameters{Input: LocalStormReport, Expected: "lsr"}
+	tests["SEL"] = TestParameters{Input: SevereWatch, Expected: "sel"}
+	tests["SVR"] = TestParameters{Input: SevereThunderstormWarning, Expected: "svr"}
+	tests["SVS"] = TestParameters{Input: SevereWeatherStatement, Expected: "svs"}
+	tests["SWO"] = TestParameters{Input: StormOutlookNarrative, Expected: "swo"}
+	tests["TOR"] = TestParameters{Input: TornadoWarning, Expected: "tor"}
+
+	for testName, params := range tests {
+		nwsProduct, _ := params.Input.(nwsProduct)
+		result := getNWSProductCode(nwsProduct)
+
+		if result != params.Expected {
+			msg := fmt.Sprintf("result: '%v', Expected: '%v'", result, params.Expected)
+			t.Errorf("TestGetNWSProductCode - %s failed. %s", testName, msg)
+		}
+	}
+}
+
 func TestNormalizeString(t *testing.T) {
 	tests := map[string]TestParameters{}
 	tests["Empty String"] = TestParameters{Input: "", Expected: ""}
 	tests["Uppercase and Spaces"] = TestParameters{Input: " STUFF ", Expected: "stuff"}
 
 	for testName, params := range tests {
-		result := normalizeString(params.Input, false)
+		str, _ := params.Input.(string)
+		result := normalizeString(str, false)
 
 		if result != params.Expected {
 			msg := fmt.Sprintf("result: '%s', Expected: '%s'", params.Input, params.Expected)
@@ -26,7 +48,8 @@ func TestNormalizeStringPreserveCase(t *testing.T) {
 	tests["Lowercase"] = TestParameters{Input: "stuff", Expected: "stuff"}
 
 	for testName, params := range tests {
-		result := normalizeString(params.Input, true)
+		str, _ := params.Input.(string)
+		result := normalizeString(str, true)
 
 		if result != params.Expected {
 			msg := fmt.Sprintf("result: '%s', Expected: '%s'", params.Input, params.Expected)
@@ -44,7 +67,8 @@ func TestNormalizeFloat(t *testing.T) {
 	tests["100"] = TestParameters{Input: "100", Expected: float32(100)}
 
 	for testName, params := range tests {
-		result := normalizeFloat(params.Input)
+		str, _ := params.Input.(string)
+		result := normalizeFloat(str)
 
 		if result != params.Expected {
 			msg := fmt.Sprintf("result: '%v', Expected: '%v'", result, params.Expected)
@@ -71,7 +95,8 @@ func TestGetTimezoneOffset(t *testing.T) {
 	tests["EDT"] = TestParameters{Input: "EDT", Expected: "0400"}
 
 	for testName, params := range tests {
-		result := GetTimezoneOffset(params.Input)
+		str, _ := params.Input.(string)
+		result := GetTimezoneOffset(str)
 
 		if result != params.Expected {
 			msg := fmt.Sprintf("result: '%s', Expected: '%s'", params.Input, params.Expected)
@@ -87,7 +112,8 @@ func TestGetLatFromString(t *testing.T) {
 	tests[""] = TestParameters{Input: "", Expected: float32(0)}
 
 	for testName, params := range tests {
-		result := getLatFromString(params.Input)
+		str, _ := params.Input.(string)
+		result := getLatFromString(str)
 
 		if result != params.Expected {
 			msg := fmt.Sprintf("result: '%v', Expected: '%s'", result, params.Expected)
@@ -103,7 +129,8 @@ func TestGetLonFromString(t *testing.T) {
 	tests[""] = TestParameters{Input: "", Expected: float32(0)}
 
 	for testName, params := range tests {
-		result := getLonFromString(params.Input)
+		str, _ := params.Input.(string)
+		result := getLonFromString(str)
 
 		if result != params.Expected {
 			msg := fmt.Sprintf("result: '%v', Expected: '%s'", result, params.Expected)

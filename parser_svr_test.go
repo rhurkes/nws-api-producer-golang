@@ -6,7 +6,7 @@ import (
 )
 
 func TestBuildSVR(t *testing.T) {
-	var product Product
+	var product product
 	svsPath := "./data/svr.json"
 	json.Unmarshal(ReadJSONFromFile(svsPath), &product)
 
@@ -17,16 +17,16 @@ func TestBuildSVR(t *testing.T) {
 		Wfo:       "KDMX",
 		IsPDS:     false,
 		IssuedFor: "western greene county in west central iowa, eastern carroll county in west central iowa",
-		Polygon: []Coordinates{
+		Polygon: []coordinates{
 			{Lat: 42.21, Lon: -94.75}, {Lat: 42.21, Lon: -94.34}, {Lat: 41.91, Lon: -94.52}, {Lat: 41.91, Lon: -94.75},
 		},
-		Location:      Coordinates{Lat: 41.98, Lon: -94.62},
+		Location:      coordinates{Lat: 41.98, Lon: -94.62},
 		Time:          "2236z",
 		MotionDegrees: 206,
 		MotionKnots:   24,
 	}
 
-	expected := WxEvent{Details: expectedDetails}
+	expected := wxEvent{Details: expectedDetails}
 
 	result, err := buildSVREvent(product)
 	if err != nil || !CompareObjects(result, expected) {

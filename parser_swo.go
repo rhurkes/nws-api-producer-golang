@@ -55,12 +55,12 @@ type mdDetails struct {
 	Summary    string
 	Forecaster string
 	ImageURI   string
-	Polygon    []Coordinates
+	Polygon    []coordinates
 }
 
 // Parses products and builds events for Severe Storm Outlook Narratives
-func buildSWOEvent(product Product) (WxEvent, error) {
-	wxEvent := WxEvent{}
+func buildSWOEvent(product product) (wxEvent, error) {
+	wxEvent := wxEvent{}
 	lines := strings.Split(product.ProductText, "\n")
 
 	if len(lines) < 20 {
@@ -77,7 +77,7 @@ func buildSWOEvent(product Product) (WxEvent, error) {
 	return wxEvent, nil
 }
 
-func parseSWOMCD(product Product) mdDetails {
+func parseSWOMCD(product product) mdDetails {
 	text := product.ProductText
 	year := product.IssuanceTime.Year()
 	details := mdDetails{
@@ -177,8 +177,8 @@ func getValidRange(text string, issued time.Time) ([]time.Time, error) {
 	return []time.Time{start, until}, nil
 }
 
-func buildPolygon(matches []string) []Coordinates {
-	var polygon []Coordinates
+func buildPolygon(matches []string) []coordinates {
+	var polygon []coordinates
 
 	for _, val := range matches {
 		lat, _ := strconv.ParseFloat(fmt.Sprintf("%s.%s", val[0:2], val[2:4]), 32)
@@ -190,7 +190,7 @@ func buildPolygon(matches []string) []Coordinates {
 
 		lon, _ := strconv.ParseFloat(fmt.Sprintf("%s.%s", lonFirstPart, val[6:8]), 32)
 
-		polygon = append(polygon, Coordinates{
+		polygon = append(polygon, coordinates{
 			Lat: float32(lat),
 			Lon: float32(lon) * -1,
 		})
@@ -199,7 +199,7 @@ func buildPolygon(matches []string) []Coordinates {
 	return polygon
 }
 
-func parseSWODY(product Product) outlookDetails {
+func parseSWODY(product product) outlookDetails {
 	text := product.ProductText
 	details := outlookDetails{
 		Code:   strings.ToLower(product.ProductCode),
@@ -218,7 +218,7 @@ func parseSWODY(product Product) outlookDetails {
 	case "ACUS48":
 		details.SubCode = "d48"
 	default:
-		fmt.Println(fmt.Sprintf("Unknown WmoCollectiveID: '%s'", product.WmoCollectiveID))
+		logger.Warn("Unknown WmoCollectiveID: '%s'", product.WmoCollectiveID)
 	}
 
 	if details.SubCode == "dy1" || details.SubCode == "dy2" {

@@ -13,8 +13,8 @@ type afdDetails struct {
 }
 
 // Parses products and builds events for Area Forecast Discussions
-func buildAFDEvent(product Product) (WxEvent, error) {
-	wxEvent := WxEvent{}
+func buildAFDEvent(product product) (wxEvent, error) {
+	wxEvent := wxEvent{}
 
 	wxEvent.Details = &afdDetails{
 		Code:   "afd",

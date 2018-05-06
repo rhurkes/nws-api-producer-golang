@@ -66,7 +66,7 @@ func getMagnitude(line string) magnitude {
 			parsedMagnitude.Value = float32(val)
 		}
 	} else {
-		fmt.Println("Unable to format magnitude: '" + line + "'")
+		logger.Warn("Unable to format magnitude: '%s'", line)
 	}
 	return parsedMagnitude
 }
@@ -78,14 +78,14 @@ func getLSRTimezoneOffset(line string) string {
 	if len(result) == 2 {
 		offset = GetTimezoneOffset(result[1])
 	} else {
-		fmt.Println(fmt.Sprintf("Unable to parse timezone offset: '%s'", line))
+		logger.Warn("Unable to parse timezone offset: '%s'", "")
 	}
 
 	return offset
 }
 
-func processLSRProduct(product Product) (WxEvent, error) {
-	wxEvent := WxEvent{}
+func processLSRProduct(product product) (wxEvent, error) {
+	wxEvent := wxEvent{DoNotPublish: true}
 	details := lsrDetails{}
 	lines := strings.Split(product.ProductText, "\n")
 
@@ -146,10 +146,12 @@ func processLSRProduct(product Product) (WxEvent, error) {
 	if err == nil {
 		details.Reported = reportedTime
 		if product.IssuanceTime.Sub(reportedTime).Minutes() > reportThresholdMinutes {
-			return wxEvent, fmt.Errorf("Report time (%s) older than threshold (%v)", reportedTime, reportThresholdMinutes)
+			logger.Infof("Report time (%s) older than threshold (%v)", reportedTime, reportThresholdMinutes)
+			return wxEvent, nil
 		}
 	} else {
-		return wxEvent, fmt.Errorf("Unable to format local reported time: '%s'", rawTime)
+		logger.Warnf("Unable to format local reported time: '%s'", rawTime)
+		return wxEvent, nil
 	}
 
 	details.Remarks = normalizeString(remarks, false)
@@ -160,6 +162,7 @@ func processLSRProduct(product Product) (WxEvent, error) {
 	details.Name = product.ProductName
 	details.Wfo = product.IssuingOffice
 
+	wxEvent.DoNotPublish = false
 	wxEvent.Details = details
 
 	return wxEvent, nil

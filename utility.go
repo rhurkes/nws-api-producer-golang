@@ -6,16 +6,31 @@ import (
 	"strings"
 )
 
-type movement struct {
-	Time     string
-	Location Coordinates
-	Degrees  int
-	Knots    int
+func getNWSProductCode(product nwsProduct) string {
+	switch product {
+	case 0:
+		return "afd"
+	case 1:
+		return "lsr"
+	case 2:
+		return "sel"
+	case 3:
+		return "svr"
+	case 4:
+		return "svs"
+	case 5:
+		return "swo"
+	case 6:
+		return "tor"
+	}
+
+	// This case isn't possible but needed for the function signature
+	return ""
 }
 
 func getLatFromString(input string) float32 {
 	if len(input) != 4 {
-		fmt.Println(fmt.Sprintf("Unable to parse Lat from '%s'", input))
+		logger.Warn(fmt.Sprintf("Unable to parse Lat from '%s'", input))
 		return 0
 	}
 
@@ -26,7 +41,7 @@ func getLatFromString(input string) float32 {
 
 func getLonFromString(input string) float32 {
 	if len(input) != 4 {
-		fmt.Println(fmt.Sprintf("Unable to parse Lon from '%s'", input))
+		logger.Warn("Unable to parse Lon from '%s'", input)
 		return 0
 	}
 
@@ -41,8 +56,8 @@ func getLonFromString(input string) float32 {
 	return float32(lon * -1)
 }
 
-func getPolygon(text string) []Coordinates {
-	var polygon []Coordinates
+func getPolygon(text string) []coordinates {
+	var polygon []coordinates
 
 	latLonLineMatch := latLonLineRegex.FindStringSubmatch(text)
 	if len(latLonLineMatch) != 2 {
@@ -52,7 +67,7 @@ func getPolygon(text string) []Coordinates {
 	latLonMatches := latLonRegex.FindAllString(latLonLineMatch[0], -1)
 
 	for _, val := range latLonMatches {
-		polygon = append(polygon, Coordinates{
+		polygon = append(polygon, coordinates{
 			Lat: getLatFromString(val[0:4]),
 			Lon: getLonFromString(val[5:9]),
 		})
@@ -79,7 +94,7 @@ func getMovement(text string) movement {
 		}
 
 		location := movementMatch[4]
-		movement.Location = Coordinates{
+		movement.Location = coordinates{
 			Lat: getLatFromString(location[0:4]),
 			Lon: getLonFromString(location[5:9]),
 		}
@@ -143,7 +158,7 @@ func GetTimezoneOffset(timezone string) string {
 	case "edt":
 		offset = "0400"
 	default:
-		fmt.Println(fmt.Sprintf("Unrecognized timezone: '%s'", timezone))
+		logger.Warn("Unrecognized timezone: '%s'", timezone)
 	}
 
 	return offset

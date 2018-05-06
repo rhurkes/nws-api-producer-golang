@@ -6,18 +6,18 @@ import (
 )
 
 func TestBuildSVSEventNotTornadoEmergency(t *testing.T) {
-	var product Product
+	var product product
 	svsPath := "./data/svs-svr-canceled.json"
 	json.Unmarshal(ReadJSONFromFile(svsPath), &product)
 
 	_, err := buildSVSEvent(product)
-	if err == nil {
+	if err != nil {
 		t.Error("TestBuildSVSEventNotTornadoEmergency failed")
 	}
 }
 
 func TestBuildSVSEventIsTornadoEmergency(t *testing.T) {
-	var product Product
+	var product product
 	svsPath := "./data/svs-svr-canceled.json"
 	json.Unmarshal(ReadJSONFromFile(svsPath), &product)
 	product.ProductText = "THIS IS A TORNADO EMERGENCY"
@@ -31,7 +31,7 @@ func TestBuildSVSEventIsTornadoEmergency(t *testing.T) {
 		IsTornadoEmergency: true,
 	}
 
-	expected := WxEvent{Details: expectedDetails}
+	expected := wxEvent{Details: expectedDetails}
 
 	result, err := buildSVSEvent(product)
 	if err != nil || !CompareObjects(result, expected) {

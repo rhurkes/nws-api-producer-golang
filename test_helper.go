@@ -2,13 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 )
 
 // TestParameters are used for the input value and the expected value in parameterized tests.
 type TestParameters struct {
-	Input    string
+	Input    interface{}
 	Expected interface{}
 }
 
@@ -16,7 +15,7 @@ type TestParameters struct {
 func ReadJSONFromFile(filepath string) []byte {
 	raw, err := ioutil.ReadFile(filepath)
 	if err != nil {
-		fmt.Println(err.Error())
+		logger.Error(err.Error())
 	}
 
 	return raw
@@ -29,8 +28,8 @@ func CompareObjects(result interface{}, expected interface{}) bool {
 	expectedVal, _ := json.Marshal(expected)
 
 	if string(expectedVal) != string(resultVal) {
-		fmt.Println(fmt.Sprintf("result: %s", string(resultVal)))
-		fmt.Println(fmt.Sprintf("expected: %s", string(expectedVal)))
+		logger.Error("result: %s", string(resultVal))
+		logger.Error("expected: %s", string(expectedVal))
 
 		return false
 	}

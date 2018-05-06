@@ -2,15 +2,15 @@ package main
 
 import "time"
 
-// ProductListResponse type
-type ProductListResponse struct {
+type nwsProduct int
+
+type productListResponse struct {
 	Context  []interface{} `json:"@context"`
 	Type     string        `json:"type"`
-	Features []Product     `json:"features"`
+	Features []product     `json:"features"`
 }
 
-// Product type
-type Product struct {
+type product struct {
 	URI             string    `json:"@id"`
 	ID              string    `json:"id"`
 	WmoCollectiveID string    `json:"wmoCollectiveId"`
@@ -21,16 +21,22 @@ type Product struct {
 	ProductText     string    `json:"productText"`
 }
 
-// WxEvent type
-type WxEvent struct {
-	Source   string
-	Details  interface{}
-	Ingested time.Time
-	Summary  string
+type wxEvent struct {
+	Source       string
+	Details      interface{}
+	Ingested     time.Time
+	Summary      string
+	DoNotPublish bool
 }
 
-// Coordinates type
-type Coordinates struct {
+type coordinates struct {
 	Lat float32
 	Lon float32
+}
+
+type movement struct {
+	Time     string
+	Location coordinates
+	Degrees  int
+	Knots    int
 }

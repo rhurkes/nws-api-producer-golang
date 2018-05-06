@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"strings"
 )
 
@@ -19,14 +18,15 @@ type svsDetails struct {
 
 // Parses products and builds events for Severe Weather Statements - currently only produces
 // messages for Tornado Emergencies.
-func buildSVSEvent(product Product) (WxEvent, error) {
-	wxEvent := WxEvent{}
+func buildSVSEvent(product product) (wxEvent, error) {
+	wxEvent := wxEvent{DoNotPublish: true}
 	lowerCaseText := strings.ToLower(product.ProductText)
 
 	if !strings.Contains(lowerCaseText, "tornado emergency") {
-		return wxEvent, errors.New("Ignoring since not tornado emergency: svs " + product.ID)
+		return wxEvent, nil
 	}
 
+	wxEvent.DoNotPublish = false
 	wxEvent.Details = &svsDetails{
 		Code:               strings.ToLower(product.ProductCode),
 		Issued:             product.IssuanceTime.Unix(),

@@ -32,8 +32,8 @@ var issuedForRegex = regexp.MustCompile(`\n\nthe nws storm prediction center has
 
 // Parses products and builds events for Severe Local Storm Watch and Watch Cancellation Msg.
 // Issued when watches are issued. Has the watch text.
-func buildSELEvent(product Product) (WxEvent, error) {
-	wxEvent := WxEvent{}
+func buildSELEvent(product product) (wxEvent, error) {
+	wxEvent := wxEvent{}
 
 	details := selDetails{
 		Code:   strings.ToLower(product.ProductCode),

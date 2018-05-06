@@ -7,7 +7,7 @@ import (
 )
 
 func TestBuildAFDEvent(t *testing.T) {
-	var product Product
+	var product product
 	afdPath := "./data/afd-mpx.json"
 	json.Unmarshal(ReadJSONFromFile(afdPath), &product)
 	product.ProductText = "afd\ntext"
@@ -21,7 +21,7 @@ func TestBuildAFDEvent(t *testing.T) {
 		Wfo:    "KMPX",
 	}
 
-	expected := WxEvent{Details: expectedDetails}
+	expected := wxEvent{Details: expectedDetails}
 
 	result, err := buildAFDEvent(product)
 	if err != nil || !CompareObjects(result, expected) {
