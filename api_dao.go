@@ -70,7 +70,6 @@ func processProductList(productType nwsProduct, features []product) {
 			break
 		}
 
-		logger.Info("processing product: ", productType, feature.ID)
 		productBody, err := fetchJSON(client, feature.URI)
 		if err != nil {
 			logger.Warn(err)
