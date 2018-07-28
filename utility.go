@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// TODO tie this closer to the enum - ideally string enums would be best
 func getNWSProductCode(product nwsProduct) string {
 	switch product {
 	case 0:

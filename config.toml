@@ -1,0 +1,5 @@
+nwsAPIURIBase  = "https://api.weather.gov"
+eventSource    = "api.weather.gov"
+requestDelayMs = 60_000
+topic          = "queue.wx.events"
+userAgent      = "sigtor.org"

@@ -4,12 +4,20 @@ import "time"
 
 type nwsProduct int
 
-type productListResponse struct {
-	Context  []interface{} `json:"@context"`
-	Type     string        `json:"type"`
-	Features []product     `json:"features"`
+type Config struct {
+	NWSAPIURIBase  string
+	EventSource    string
+	RequestDelayMs int
+	Topic          string
+	UserAgent      string
 }
 
+type productListResponse struct {
+	Context interface{} `json:"@context"`
+	Graph   []product   `json:"@graph"`
+}
+
+// Used for both product list and product calls
 type product struct {
 	URI             string    `json:"@id"`
 	ID              string    `json:"id"`
@@ -18,7 +26,9 @@ type product struct {
 	IssuanceTime    time.Time `json:"issuanceTime"`
 	ProductCode     string    `json:"productCode"`
 	ProductName     string    `json:"productName"`
-	ProductText     string    `json:"productText"`
+
+	// ProductText is only populated on product calls
+	ProductText string `json:"productText"`
 }
 
 type wxEvent struct {

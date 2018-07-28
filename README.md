@@ -1,3 +1,5 @@
+# Description
+
 # Build & Run
 TODO
 
@@ -37,13 +39,24 @@ TODO
 
 
 # TODO
-- Fix kafka scoping
+- Show debug logs
+- Log ts in human readable format
+- Feature vs product vs ???
 - Fix error handling of parsers
 - Are api/topic dao named correctly?
 - Error handling for kafka producing
+- Disable logger output during tests
+- Functional and integration tests
 - Make testing easier/more elegant
 - Add remaining products
 - Tests only run with Kafka running/mock Kafka
 - Package clean up
+- Evaluate performance
+- Evaluate error handling
+- Heartbeat for producer
 - Update README: Clean up, deployment, testing
 - Logging / Funnel / Logrotate
+
+# Deeper questions
+- Return an error, or an empty object of the type specified in the signature? ie. getProductList()
+- where to keep kafka connection, and what is a dao *really*?
