@@ -8,7 +8,7 @@ import (
 
 func TestBuildTorEvent(t *testing.T) {
 	var product product
-	path := "./data/tor-radar-indicated.json"
+	path := "./test_data/tor-radar-indicated.json"
 	json.Unmarshal(ReadJSONFromFile(path), &product)
 
 	expectedDetails := torDetails{

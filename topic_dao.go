@@ -17,7 +17,6 @@ func writeToTopic(data []byte, topic *string) {
 		}
 	}()
 
-	// Produce messages to topic asynchronously
 	producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: topic, Partition: kafka.PartitionAny},
 		Value:          data,

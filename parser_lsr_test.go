@@ -10,7 +10,7 @@ import (
 
 func TestProcessLSRProduct_Valid_LSR(t *testing.T) {
 	var product product
-	lsrHailRemarksPath := "./data/lsr-hail-remarks.json"
+	lsrHailRemarksPath := "./test_data/lsr-hail-remarks.json"
 	json.Unmarshal(ReadJSONFromFile(lsrHailRemarksPath), &product)
 	reported, _ := time.Parse(time.RFC3339, "2018-03-26T19:55:00-05:00")
 	issued, _ := time.Parse(time.RFC3339, "2018-03-27T01:16:00Z")
@@ -62,7 +62,7 @@ func TestProcessLSRProduct_Summary(t *testing.T) {
 
 func TestProcessLSRProduct_No_Remarks_Flag(t *testing.T) {
 	var product product
-	lsrHailRemarksPath := "./data/lsr-hail-remarks.json"
+	lsrHailRemarksPath := "./test_data/lsr-hail-remarks.json"
 	json.Unmarshal(ReadJSONFromFile(lsrHailRemarksPath), &product)
 	product.ProductText = strings.Replace(product.ProductText, "..REMARKS..", "", 1)
 
@@ -74,7 +74,7 @@ func TestProcessLSRProduct_No_Remarks_Flag(t *testing.T) {
 
 func TestProcessLSRProduct_Older_than_Threshold(t *testing.T) {
 	var product product
-	lsrHailRemarksPath := "./data/lsr-hail-remarks.json"
+	lsrHailRemarksPath := "./test_data/lsr-hail-remarks.json"
 	json.Unmarshal(ReadJSONFromFile(lsrHailRemarksPath), &product)
 	product.ProductText = strings.Replace(product.ProductText, "0755 PM", "0655 PM", 1)
 
@@ -86,7 +86,7 @@ func TestProcessLSRProduct_Older_than_Threshold(t *testing.T) {
 
 func TestProcessLSRProduct_Invalid_Reported_Time(t *testing.T) {
 	var product product
-	lsrHailRemarksPath := "./data/lsr-hail-remarks.json"
+	lsrHailRemarksPath := "./test_data/lsr-hail-remarks.json"
 	json.Unmarshal(ReadJSONFromFile(lsrHailRemarksPath), &product)
 	product.ProductText = strings.Replace(product.ProductText, "0755 PM", "garbage", 1)
 

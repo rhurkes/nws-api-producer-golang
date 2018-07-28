@@ -22,10 +22,10 @@ func getNWSProductCode(product nwsProduct) string {
 		return "swo"
 	case 6:
 		return "tor"
+	default:
+		logger.Warn("Unknown product")
+		return "unknown"
 	}
-
-	// This case isn't possible but needed for the function signature
-	return ""
 }
 
 func getLatFromString(input string) float32 {

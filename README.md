@@ -37,5 +37,13 @@ TODO
 
 
 # TODO
-- Deployment
+- Fix kafka scoping
+- Fix error handling of parsers
+- Are api/topic dao named correctly?
+- Error handling for kafka producing
+- Make testing easier/more elegant
+- Add remaining products
+- Tests only run with Kafka running/mock Kafka
+- Package clean up
+- Update README: Clean up, deployment, testing
 - Logging / Funnel / Logrotate

@@ -7,7 +7,7 @@ import (
 
 func TestBuildSVR(t *testing.T) {
 	var product product
-	svsPath := "./data/svr.json"
+	svsPath := "./test_data/svr.json"
 	json.Unmarshal(ReadJSONFromFile(svsPath), &product)
 
 	expectedDetails := svrDetails{

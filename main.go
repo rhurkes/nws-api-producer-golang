@@ -27,10 +27,12 @@ const (
 )
 
 var (
-	logger                *zap.SugaredLogger
-	lastSeenProduct       = make(map[nwsProduct]string)
-	producer, producerErr = kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost"})
-	activeProductTypes    = []nwsProduct{AreaForecastDiscussion, LocalStormReport, SevereWatch,
+	logger          *zap.SugaredLogger
+	lastSeenProduct = make(map[nwsProduct]string)
+	// TODO better way of handling producer scope
+	producer           *kafka.Producer
+	kafkaErr           error
+	activeProductTypes = []nwsProduct{AreaForecastDiscussion, LocalStormReport, SevereWatch,
 		SevereThunderstormWarning, SevereWeatherStatement, StormOutlookNarrative, TornadoWarning}
 )
 
@@ -39,14 +41,20 @@ func init() {
 	defer productionLogger.Sync()
 	logger = productionLogger.Sugar()
 	logger.Info("Initializing...")
+	producer, kafkaErr = kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost"})
+	// Unable to connect to broker is not an error
+	if kafkaErr != nil {
+		panic(kafkaErr)
+	}
 }
 
 func processFeature(productType nwsProduct, responseBody []byte) {
 	var product product
-	json.Unmarshal(responseBody, &product)
-
 	var wxEvent wxEvent
 	var parseError error
+
+	json.Unmarshal(responseBody, &product)
+
 	switch productType {
 	case LocalStormReport:
 		wxEvent, parseError = processLSRProduct(product)
@@ -81,11 +89,6 @@ func processFeature(productType nwsProduct, responseBody []byte) {
 }
 
 func main() {
-	if producerErr != nil {
-		logger.Fatal("Unable to start producer", producerErr)
-		panic(producerErr)
-	}
-
 	ticker := time.NewTicker(requestDelayMs * time.Millisecond)
 	for range ticker.C {
 		for _, productType := range activeProductTypes {

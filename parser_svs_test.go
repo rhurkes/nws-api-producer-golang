@@ -7,7 +7,7 @@ import (
 
 func TestBuildSVSEventNotTornadoEmergency(t *testing.T) {
 	var product product
-	svsPath := "./data/svs-svr-canceled.json"
+	svsPath := "./test_data/svs-svr-canceled.json"
 	json.Unmarshal(ReadJSONFromFile(svsPath), &product)
 
 	_, err := buildSVSEvent(product)
@@ -18,7 +18,7 @@ func TestBuildSVSEventNotTornadoEmergency(t *testing.T) {
 
 func TestBuildSVSEventIsTornadoEmergency(t *testing.T) {
 	var product product
-	svsPath := "./data/svs-svr-canceled.json"
+	svsPath := "./test_data/svs-svr-canceled.json"
 	json.Unmarshal(ReadJSONFromFile(svsPath), &product)
 	product.ProductText = "THIS IS A TORNADO EMERGENCY"
 

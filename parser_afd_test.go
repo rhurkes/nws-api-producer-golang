@@ -8,7 +8,7 @@ import (
 
 func TestBuildAFDEvent(t *testing.T) {
 	var product product
-	afdPath := "./data/afd-mpx.json"
+	afdPath := "./test_data/afd-mpx.json"
 	json.Unmarshal(ReadJSONFromFile(afdPath), &product)
 	product.ProductText = "afd\ntext"
 	productTime, _ := time.Parse(time.RFC3339, "2018-04-14T02:07:00Z")
