@@ -26,7 +26,7 @@ func fetchJSON(client httpClient, uri string) ([]byte, error) {
 	}
 
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("User-Agent", config.UserAgent)
+	req.Header.Set("User-Agent", conf.UserAgent)
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -54,7 +54,7 @@ func fetchJSON(client httpClient, uri string) ([]byte, error) {
 }
 
 func buildProductListURI(productType string) string {
-	return fmt.Sprintf("%s/products/types/%s", config.NWSAPIURIBase, productType)
+	return fmt.Sprintf("%s/products/types/%s", conf.NWSAPIURIBase, productType)
 }
 
 func getProductList(productType string) productListResponse {

@@ -5,14 +5,6 @@ import (
 )
 
 type svsDetails struct {
-	// Standard fields
-	Code   string
-	Issued int64
-	Name   string
-	Text   string
-	Wfo    string
-
-	// Derived fields
 	IsTornadoEmergency bool
 }
 
@@ -27,14 +19,7 @@ func buildSVSEvent(product product) (wxEvent, error) {
 	}
 
 	wxEvent.DoNotPublish = false
-	wxEvent.Details = &svsDetails{
-		Code:               strings.ToLower(product.ProductCode),
-		Issued:             product.IssuanceTime.Unix(),
-		Name:               product.ProductName,
-		Wfo:                product.IssuingOffice,
-		Text:               normalizeString(product.ProductText, true),
-		IsTornadoEmergency: true,
-	}
+	wxEvent.Data = nwsData{Derived: svsDetails{IsTornadoEmergency: true}}
 
 	return wxEvent, nil
 }

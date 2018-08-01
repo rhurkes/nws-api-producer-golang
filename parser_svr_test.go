@@ -11,10 +11,6 @@ func TestBuildSVR(t *testing.T) {
 	json.Unmarshal(ReadJSONFromFile(svsPath), &product)
 
 	expectedDetails := svrDetails{
-		Code:      "svr",
-		Issued:    1523658960,
-		Name:      "Severe Thunderstorm Warning",
-		Wfo:       "KDMX",
 		IsPDS:     false,
 		IssuedFor: "western greene county in west central iowa, eastern carroll county in west central iowa",
 		Polygon: []coordinates{
@@ -26,7 +22,7 @@ func TestBuildSVR(t *testing.T) {
 		MotionKnots:   24,
 	}
 
-	expected := wxEvent{Details: expectedDetails}
+	expected := wxEvent{Data: nwsData{Derived: expectedDetails}}
 
 	result, err := buildSVREvent(product)
 	if err != nil || !CompareObjects(result, expected) {
@@ -37,7 +33,7 @@ func TestBuildSVR(t *testing.T) {
 func TestDeriveSVRDetailsIsPDS(t *testing.T) {
 	input := "THIS IS A PARTICULARLY DANGEROUS SITUATION."
 
-	result := deriveSVRDetails(input, svrDetails{})
+	result := deriveSVRDetails(input)
 	if !result.IsPDS {
 		t.Error("TestDeriveSVRDetailsIsPDS failed")
 	}

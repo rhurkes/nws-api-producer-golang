@@ -6,13 +6,6 @@ import (
 )
 
 type svrDetails struct {
-	// Standard fields
-	Code   string
-	Issued int64
-	Name   string
-	Wfo    string
-
-	// Derived fields
 	IsPDS         bool
 	IssuedFor     string
 	Polygon       []coordinates
@@ -26,25 +19,16 @@ var warningForRegex = regexp.MustCompile(`\n\n\*[\s|\S]+?warning for\.{3}\n([\s|
 
 // Parses products and builds events for Severe Thunderstorm Warnings
 func buildSVREvent(product product) (wxEvent, error) {
-	wxEvent := wxEvent{}
-
-	details := svrDetails{
-		Code:   strings.ToLower(product.ProductCode),
-		Issued: product.IssuanceTime.Unix(),
-		Name:   product.ProductName,
-		Wfo:    product.IssuingOffice,
-	}
-
-	wxEvent.Details = deriveSVRDetails(product.ProductText, details)
+	wxEvent := wxEvent{Data: nwsData{Derived: deriveSVRDetails(product.ProductText)}}
 
 	return wxEvent, nil
 }
 
-func deriveSVRDetails(text string, details svrDetails) svrDetails {
+func deriveSVRDetails(text string) svrDetails {
 	lowerCaseText := strings.ToLower(text)
-	details.Polygon = getPolygon(lowerCaseText)
-
 	movement := getMovement(lowerCaseText)
+	details := svrDetails{}
+	details.Polygon = getPolygon(lowerCaseText)
 	details.Time = movement.Time
 	details.Location = movement.Location
 	details.MotionDegrees = movement.Degrees

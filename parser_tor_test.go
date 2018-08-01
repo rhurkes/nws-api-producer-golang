@@ -12,15 +12,11 @@ func TestBuildTorEvent(t *testing.T) {
 	json.Unmarshal(ReadJSONFromFile(path), &product)
 
 	expectedDetails := torDetails{
-		Code:               "tor",
 		IsTornadoEmergency: false,
 		IsPDS:              false,
 		IsObserved:         false,
-		Issued:             1523664540,
-		Name:               "Tornado Warning",
 		Source:             "radar indicated rotation",
 		Description:        "at 709 pm cdt, a severe thunderstorm capable of producing a tornado was located near mansfield, or 10 miles northeast of ava, moving northeast at 25 mph.",
-		Wfo:                "KSGF",
 		Polygon: []coordinates{
 			{Lat: 37, Lon: -92.51}, {Lat: 37.06, Lon: -92.61}, {Lat: 37.24, Lon: -92.5}, {Lat: 37.23, Lon: -92.38}, {Lat: 37.12, Lon: -92.26},
 		},
@@ -30,7 +26,7 @@ func TestBuildTorEvent(t *testing.T) {
 		MotionKnots:   22,
 	}
 
-	expected := wxEvent{Details: expectedDetails}
+	expected := wxEvent{Data: nwsData{Derived: expectedDetails}}
 
 	result, err := buildTOREvent(product)
 	if err != nil || !CompareObjects(result, expected) {
@@ -41,7 +37,7 @@ func TestBuildTorEvent(t *testing.T) {
 func TestDeriveTORDetailsIsEmergency(t *testing.T) {
 	input := "THIS IS A TORNADO EMERGENCY"
 
-	result := deriveTORDetails(input, torDetails{})
+	result := deriveTORDetails(input)
 	if !result.IsTornadoEmergency {
 		t.Error("TestDeriveTORDetailsIsEmergency failed")
 	}
@@ -50,7 +46,7 @@ func TestDeriveTORDetailsIsEmergency(t *testing.T) {
 func TestDeriveTORDetailsIsPDS(t *testing.T) {
 	input := "THIS IS A PARTICULARLY DANGEROUS SITUATION."
 
-	result := deriveTORDetails(input, torDetails{})
+	result := deriveTORDetails(input)
 	if !result.IsPDS {
 		t.Error("TestDeriveTORDetailsIsPDS failed")
 	}
@@ -59,7 +55,7 @@ func TestDeriveTORDetailsIsPDS(t *testing.T) {
 func TestDeriveTORDetailsIsObserved(t *testing.T) {
 	input := "BLAH BLAH TORNADO...OBSERVED BLAH BLAH"
 
-	result := deriveTORDetails(input, torDetails{})
+	result := deriveTORDetails(input)
 	if !result.IsObserved {
 		t.Error("TestDeriveTORDetailsIsObserved failed")
 	}

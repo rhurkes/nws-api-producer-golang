@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"strings"
 	"time"
 )
 
@@ -58,11 +59,11 @@ func processFeature(productType nwsProduct, responseBody []byte) {
 
 	switch productType {
 	case LocalStormReport:
-		wxEvent, parseError = processLSRProduct(product)
+		wxEvent, parseError = buildLSREvent(product)
 	case StormOutlookNarrative:
 		wxEvent, parseError = buildSWOEvent(product)
 	case AreaForecastDiscussion:
-		wxEvent, parseError = buildAFDEvent(product)
+		// Nothing to process
 	case TornadoWarning:
 		wxEvent, parseError = buildTOREvent(product)
 	case SevereWeatherStatement:
@@ -72,7 +73,7 @@ func processFeature(productType nwsProduct, responseBody []byte) {
 	case SevereThunderstormWarning:
 		wxEvent, parseError = buildSVREvent(product)
 	default:
-		// TODO how to handle unhandled products
+		logger.Warn("Unhandled product", product)
 	}
 
 	if parseError != nil {
@@ -80,15 +81,23 @@ func processFeature(productType nwsProduct, responseBody []byte) {
 		return
 	}
 
-	// TODO why do we have a field? Because the wxevent is valid, we just don't want to process it
-	// TODO should negate it so the field defaults to false
 	if wxEvent.DoNotPublish {
+		logger.Infof("event marked as DoNotPublish")
 		return
 	}
 
-	wxEvent.Source = config.EventSource
-	wxEvent.Ingested = time.Now().UTC()
+	wxEvent.Source = conf.EventSource
+	wxEvent.Processed = time.Now().UTC()
+	wxEvent.Data = nwsData{
+		Common: nwsCommonData{
+			Code:   strings.ToLower(product.ProductCode),
+			ID:     product.ID,
+			Issued: product.IssuanceTime,
+			Name:   product.ProductName,
+			Wfo:    product.IssuingOffice,
+			Text:   normalizeString(product.ProductText, false)}}
+
 	payload, _ := json.Marshal(wxEvent)
-	topicName := config.Topic
+	topicName := conf.Topic
 	writeToTopic(payload, &topicName)
 }

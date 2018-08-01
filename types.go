@@ -4,7 +4,7 @@ import "time"
 
 type nwsProduct int
 
-type Config struct {
+type config struct {
 	NWSAPIURIBase  string
 	EventSource    string
 	RequestDelayMs int
@@ -33,10 +33,23 @@ type product struct {
 
 type wxEvent struct {
 	Source       string
-	Details      interface{}
-	Ingested     time.Time
-	Summary      string
+	Processed    time.Time
+	Data         nwsData
 	DoNotPublish bool
+}
+
+type nwsData struct {
+	Common  nwsCommonData
+	Derived interface{}
+}
+
+type nwsCommonData struct {
+	Code   string
+	ID     string
+	Issued time.Time
+	Name   string
+	Text   string
+	Wfo    string
 }
 
 type coordinates struct {

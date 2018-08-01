@@ -12,14 +12,6 @@ type watchStats struct {
 }
 
 type selDetails struct {
-	// Standard fields
-	Code   string
-	Issued int64
-	Name   string
-	Text   string
-	Wfo    string
-
-	// Derived fields
 	IsPDS       bool
 	WatchNumber int
 	WatchType   string
@@ -33,25 +25,16 @@ var issuedForRegex = regexp.MustCompile(`\n\nthe nws storm prediction center has
 // Parses products and builds events for Severe Local Storm Watch and Watch Cancellation Msg.
 // Issued when watches are issued. Has the watch text.
 func buildSELEvent(product product) (wxEvent, error) {
-	wxEvent := wxEvent{}
-
-	details := selDetails{
-		Code:   strings.ToLower(product.ProductCode),
-		Issued: product.IssuanceTime.Unix(),
-		Name:   product.ProductName,
-		Wfo:    product.IssuingOffice,
-		Text:   product.ProductText,
-	}
-
-	wxEvent.Details = deriveSELDetails(product.ProductText, details)
+	wxEvent := wxEvent{Data: nwsData{Derived: buildSELDetails(product.ProductText)}}
 
 	return wxEvent, nil
 }
 
-func deriveSELDetails(text string, details selDetails) selDetails {
+func buildSELDetails(text string) selDetails {
 	lowerCaseText := strings.ToLower(text)
-	details.IsPDS = strings.Contains(lowerCaseText, "this is a particularly dangerous situation")
 	stats := getWatchStats(lowerCaseText)
+	details := selDetails{}
+	details.IsPDS = strings.Contains(lowerCaseText, "this is a particularly dangerous situation")
 	details.WatchType = stats.Type
 	details.WatchNumber = stats.Number
 	details.Status = getStatus(lowerCaseText)

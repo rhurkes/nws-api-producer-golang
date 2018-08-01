@@ -6,13 +6,6 @@ import (
 )
 
 type torDetails struct {
-	// Standard fields
-	Code   string
-	Issued int64
-	Name   string
-	Wfo    string
-
-	// Derived fields
 	IsTornadoEmergency bool
 	IsPDS              bool
 	IsObserved         bool
@@ -33,29 +26,20 @@ var latLonRegex = regexp.MustCompile(`(\d{4}\s\d{4})`)
 
 // Parses products and builds events for Tornado Warnings
 func buildTOREvent(product product) (wxEvent, error) {
-	wxEvent := wxEvent{}
-
-	details := torDetails{
-		Code:   strings.ToLower(product.ProductCode),
-		Issued: product.IssuanceTime.Unix(),
-		Name:   product.ProductName,
-		Wfo:    product.IssuingOffice,
-	}
-
-	wxEvent.Details = deriveTORDetails(product.ProductText, details)
+	wxEvent := wxEvent{Data: nwsData{Derived: deriveTORDetails(product.ProductText)}}
 
 	return wxEvent, nil
 }
 
-func deriveTORDetails(text string, details torDetails) torDetails {
+func deriveTORDetails(text string) torDetails {
 	lowerCaseText := strings.ToLower(text)
+	details := torDetails{}
 	details.IsTornadoEmergency = strings.Contains(lowerCaseText, "tornado emergency")
 	details.IsPDS = strings.Contains(lowerCaseText, "particularly dangerous situation")
 	details.IsObserved = strings.Contains(lowerCaseText, "tornado...observed")
 	details.Source = getSource(lowerCaseText)
 	details.Description = getDescription(lowerCaseText)
 	details.Polygon = getPolygon(lowerCaseText)
-
 	movement := getMovement(lowerCaseText)
 	details.Time = movement.Time
 	details.Location = movement.Location

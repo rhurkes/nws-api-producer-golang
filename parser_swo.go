@@ -22,13 +22,6 @@ var polygonRegex = regexp.MustCompile(`\d{8}`)
 var wfoRegex = regexp.MustCompile(`ATTN\.{3}WFO\.{3}((?:\w{3}\.{3})+)`)
 
 type outlookDetails struct {
-	// Standard fields
-	Code   string
-	Issued int64
-	Name   string
-	Wfo    string
-
-	// Derived fields
 	SubCode    string // dy1, dy2, dy3, d48
 	Valid      string // 0600Z, 1300Z, 1630Z, 1730Z, 2000Z, 0100Z
 	Risk       string
@@ -37,13 +30,6 @@ type outlookDetails struct {
 }
 
 type mdDetails struct {
-	// Standard fields
-	Code   string
-	Issued int64
-	Name   string
-	Wfo    string
-
-	// Derived fields
 	SubCode    string
 	Number     string
 	Affected   string
@@ -69,9 +55,10 @@ func buildSWOEvent(product product) (wxEvent, error) {
 	}
 
 	if lines[3] == "SWOMCD" {
-		wxEvent.Details = parseSWOMCD(product)
+		wxEvent.Data = nwsData{Derived: parseSWOMCD(product)}
 	} else {
-		wxEvent.Details = parseSWODY(product)
+		// TODO make a check here
+		wxEvent.Data = nwsData{Derived: parseSWODY(product)}
 	}
 
 	return wxEvent, nil
@@ -80,13 +67,7 @@ func buildSWOEvent(product product) (wxEvent, error) {
 func parseSWOMCD(product product) mdDetails {
 	text := product.ProductText
 	year := product.IssuanceTime.Year()
-	details := mdDetails{
-		Code:    strings.ToLower(product.ProductCode),
-		SubCode: "mcd",
-		Issued:  product.IssuanceTime.Unix(),
-		Name:    product.ProductName,
-		Wfo:     product.IssuingOffice,
-	}
+	details := mdDetails{SubCode: "mcd"}
 
 	numberMatch := numberRegex.FindStringSubmatch(text)
 	if len(numberMatch) == 2 {
@@ -201,12 +182,7 @@ func buildPolygon(matches []string) []coordinates {
 
 func parseSWODY(product product) outlookDetails {
 	text := product.ProductText
-	details := outlookDetails{
-		Code:   strings.ToLower(product.ProductCode),
-		Issued: product.IssuanceTime.Unix(),
-		Name:   product.ProductName,
-		Wfo:    product.IssuingOffice,
-	}
+	details := outlookDetails{}
 
 	switch product.WmoCollectiveID {
 	case "ACUS01":

@@ -39,16 +39,16 @@ TODO
 
 
 # TODO
+- Uncomment integration tests
+- Add remaining products
+- Add string enums
 - Show debug logs
-- Log ts in human readable format
 - Feature vs product vs ???
 - Fix error handling of parsers
 - Are api/topic dao named correctly?
 - Error handling for kafka producing
 - Disable logger output during tests
 - Functional and integration tests
-- Make testing easier/more elegant
-- Add remaining products
 - Tests only run with Kafka running/mock Kafka
 - Package clean up
 - Evaluate performance

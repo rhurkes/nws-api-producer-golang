@@ -22,16 +22,9 @@ func TestBuildSVSEventIsTornadoEmergency(t *testing.T) {
 	json.Unmarshal(ReadJSONFromFile(svsPath), &product)
 	product.ProductText = "THIS IS A TORNADO EMERGENCY"
 
-	expectedDetails := svsDetails{
-		Code:               "svs",
-		Issued:             1523824740,
-		Name:               "Severe Weather Statement",
-		Text:               "THIS IS A TORNADO EMERGENCY",
-		Wfo:                "KRNK",
-		IsTornadoEmergency: true,
-	}
+	expectedDetails := svsDetails{IsTornadoEmergency: true}
 
-	expected := wxEvent{Details: expectedDetails}
+	expected := wxEvent{Data: nwsData{Derived: expectedDetails}}
 
 	result, err := buildSVSEvent(product)
 	if err != nil || !CompareObjects(result, expected) {

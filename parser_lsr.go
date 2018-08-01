@@ -13,13 +13,6 @@ import (
 )
 
 type lsrDetails struct {
-	// Standard fields
-	Code   string
-	Issued time.Time
-	Name   string
-	Wfo    string
-
-	// Derived fields
 	Type        string
 	Datetime    time.Time
 	Reported    time.Time
@@ -84,7 +77,7 @@ func getLSRTimezoneOffset(line string) string {
 	return offset
 }
 
-func processLSRProduct(product product) (wxEvent, error) {
+func buildLSREvent(product product) (wxEvent, error) {
 	wxEvent := wxEvent{DoNotPublish: true}
 	details := lsrDetails{}
 	lines := strings.Split(product.ProductText, "\n")
@@ -155,15 +148,8 @@ func processLSRProduct(product product) (wxEvent, error) {
 	}
 
 	details.Remarks = normalizeString(remarks, false)
-
-	// Set standard fields - excluding ProductText
-	details.Code = strings.ToLower(product.ProductCode)
-	details.Issued = product.IssuanceTime
-	details.Name = product.ProductName
-	details.Wfo = product.IssuingOffice
-
 	wxEvent.DoNotPublish = false
-	wxEvent.Details = details
+	wxEvent.Data = nwsData{Derived: details}
 
 	return wxEvent, nil
 }

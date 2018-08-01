@@ -22,7 +22,7 @@ const (
 const configPath = "config.toml"
 
 var (
-	config             Config
+	conf               config
 	logger             *zap.SugaredLogger
 	lastSeenProduct    = make(map[nwsProduct]string)
 	activeProductTypes = []nwsProduct{AreaForecastDiscussion, LocalStormReport, SevereWatch,
@@ -30,17 +30,17 @@ var (
 )
 
 func init() {
-	if _, err := toml.DecodeFile(configPath, &config); err != nil {
+	if _, err := toml.DecodeFile(configPath, &conf); err != nil {
 		fmt.Printf("unable to decode config: %s", configPath)
 	}
-	productionLogger, _ := zap.NewProduction()
+	productionLogger, _ := zap.NewDevelopment() // NewProduction()
 	defer productionLogger.Sync()
 	logger = productionLogger.Sugar()
 	logger.Info("initializing")
 }
 
 func main() {
-	ticker := time.NewTicker(time.Millisecond * time.Duration(config.RequestDelayMs))
+	ticker := time.NewTicker(time.Millisecond * time.Duration(conf.RequestDelayMs))
 	processProducts(activeProductTypes)
 
 	for range ticker.C {
