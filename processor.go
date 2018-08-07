@@ -72,6 +72,8 @@ func processFeature(productType nwsProduct, responseBody []byte) {
 		wxEvent, parseError = buildSELEvent(product)
 	case SevereThunderstormWarning:
 		wxEvent, parseError = buildSVREvent(product)
+	case FlashFloodWarning:
+		wxEvent, parseError = parseFFWEvent(product)
 	default:
 		logger.Warn("Unhandled product", product)
 	}

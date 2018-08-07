@@ -7,7 +7,7 @@ import (
 
 type svrDetails struct {
 	IsPDS         bool
-	IssuedFor     string
+	IssuedFor     []string
 	Polygon       []coordinates
 	Location      coordinates
 	Time          string
@@ -15,9 +15,9 @@ type svrDetails struct {
 	MotionKnots   int
 }
 
-var warningForRegex = regexp.MustCompile(`\n\n\*[\s|\S]+?warning for\.{3}\n([\s|\S]+?)\n\n`)
+var svrWarningForRegex = regexp.MustCompile(`\n\n\*[\s|\S]+?warning for\.{3}\n([\s|\S]+?)\n\n`)
 
-// Parses products and builds events for Severe Thunderstorm Warnings
+// Severe Thunderstorm Warnings parser
 func buildSVREvent(product product) (wxEvent, error) {
 	wxEvent := wxEvent{Data: nwsData{Derived: deriveSVRDetails(product.ProductText)}}
 
@@ -33,22 +33,8 @@ func deriveSVRDetails(text string) svrDetails {
 	details.Location = movement.Location
 	details.MotionDegrees = movement.Degrees
 	details.MotionKnots = movement.Knots
-	details.IssuedFor = getWarningFor(lowerCaseText)
+	details.IssuedFor = getIssuedFor(lowerCaseText)
 	details.IsPDS = strings.Contains(lowerCaseText, "particularly dangerous situation")
 
 	return details
-}
-
-func getWarningFor(text string) string {
-	warningFor := ""
-
-	warningForMatch := warningForRegex.FindStringSubmatch(text)
-
-	if len(warningForMatch) == 2 {
-		warningFor = strings.Replace(warningForMatch[1], "...", "", -1)
-		warningFor = strings.Replace(warningFor, "  ", "", -1)
-		warningFor = strings.Replace(warningFor, "\n", ", ", -1)
-	}
-
-	return warningFor
 }

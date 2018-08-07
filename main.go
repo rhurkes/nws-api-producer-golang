@@ -8,17 +8,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// TODO move to types, NWS Product Type Enums
-const (
-	AreaForecastDiscussion nwsProduct = iota
-	LocalStormReport
-	SevereWatch
-	SevereThunderstormWarning
-	SevereWeatherStatement
-	StormOutlookNarrative
-	TornadoWarning
-)
-
 const configPath = "config.toml"
 
 var (

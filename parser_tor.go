@@ -20,9 +20,6 @@ type torDetails struct {
 
 var sourceRegex = regexp.MustCompile(`\n{2}\s{2}source...(.+)\.\s?\n{2}`)
 var descriptionRegex = regexp.MustCompile(`\n\*\s(at\s[\S|\s]+?)\n\n`)
-var movementRegex = regexp.MustCompile(`\ntime...mot...loc\s(\d{4}z)\s(\d+)\D{3}\s(\d+)kt\s(\d{4}\s\d{4})`)
-var latLonLineRegex = regexp.MustCompile(`lat...lon\s([\s|\S]+)time\.{3}`)
-var latLonRegex = regexp.MustCompile(`(\d{4}\s\d{4})`)
 
 // Parses products and builds events for Tornado Warnings
 func buildTOREvent(product product) (wxEvent, error) {

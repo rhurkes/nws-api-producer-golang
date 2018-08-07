@@ -2,6 +2,20 @@ package main
 
 import "time"
 
+// NWS Product Types
+const (
+	AreaForecastDiscussion nwsProduct = iota
+	LocalStormReport
+	SevereWatch
+	SevereThunderstormWarning
+	SevereWeatherStatement
+	StormOutlookNarrative
+	TornadoWarning
+	FlashFloodWarning
+	// TODO SEV
+	// TODO Re-order all these
+)
+
 type nwsProduct int
 
 type config struct {

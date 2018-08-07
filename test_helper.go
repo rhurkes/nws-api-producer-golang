@@ -28,8 +28,8 @@ func CompareObjects(result interface{}, expected interface{}) bool {
 	expectedVal, _ := json.Marshal(expected)
 
 	if string(expectedVal) != string(resultVal) {
-		logger.Error("result: %s", string(resultVal))
-		logger.Error("expected: %s", string(expectedVal))
+		logger.Infof("result: %s\n", string(resultVal))
+		logger.Infof("expected: %s\n", string(expectedVal))
 
 		return false
 	}

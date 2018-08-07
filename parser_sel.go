@@ -38,7 +38,7 @@ func buildSELDetails(text string) selDetails {
 	details.WatchType = stats.Type
 	details.WatchNumber = stats.Number
 	details.Status = getStatus(lowerCaseText)
-	details.IssuedFor = getIssuedFor(lowerCaseText)
+	details.IssuedFor = getSPCIssuedFor(lowerCaseText)
 
 	return details
 }
@@ -55,7 +55,7 @@ func getWatchStats(text string) watchStats {
 	return stats
 }
 
-func getIssuedFor(text string) string {
+func getSPCIssuedFor(text string) string {
 	issuedFor := ""
 	issuedForMatch := issuedForRegex.FindStringSubmatch(text)
 

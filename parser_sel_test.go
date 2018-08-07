@@ -83,7 +83,7 @@ func TestGetStatus(t *testing.T) {
 	}
 }
 
-func TestGetIssuedFor(t *testing.T) {
+func TestGetSPCIssuedFor(t *testing.T) {
 	var product product
 	svsPath := "./test_data/sel-tor-watch.json"
 	json.Unmarshal(ReadJSONFromFile(svsPath), &product)
@@ -94,11 +94,11 @@ func TestGetIssuedFor(t *testing.T) {
 
 	for testName, params := range tests {
 		str, _ := params.Input.(string)
-		result := getIssuedFor(str)
+		result := getSPCIssuedFor(str)
 
 		if result != params.Expected {
 			msg := fmt.Sprintf("result: '%s', Expected: '%s'", result, params.Expected)
-			t.Errorf("TestGetIssuedFor - %s failed. %s", testName, msg)
+			t.Errorf("TestGetSPCIssuedFor - %s failed. %s", testName, msg)
 		}
 	}
 }

@@ -12,7 +12,7 @@ func TestBuildSVR(t *testing.T) {
 
 	expectedDetails := svrDetails{
 		IsPDS:     false,
-		IssuedFor: "western greene county in west central iowa, eastern carroll county in west central iowa",
+		IssuedFor: []string{"western greene county in west central iowa", "eastern carroll county in west central iowa"},
 		Polygon: []coordinates{
 			{Lat: 42.21, Lon: -94.75}, {Lat: 42.21, Lon: -94.34}, {Lat: 41.91, Lon: -94.52}, {Lat: 41.91, Lon: -94.75},
 		},

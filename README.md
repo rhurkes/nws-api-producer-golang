@@ -18,12 +18,12 @@ TODO
         MDs contain their own coordinates and do not have a corresponding PTS.
 - `SEL` Severe Local Storm Watch and Watch Cancellation Msg. Issued when watches are issued. Has the watch text.
 - `TOR` Tornado Warning. Can contain Tornado Emergency status (https://en.wikipedia.org/wiki/Tornado_emergency)
-- `SVR` Severe Thunderstorm Warning.
+- `SVR` Severe Thunderstorm Warning
 - `SVS` Severe Weather Statement. Can contain Tornado Emergency status (https://en.wikipedia.org/wiki/Tornado_emergency)
-- `AFD` Area Forecast Discussion.
+- `AFD` Area Forecast Discussion
+- `FFW` Flash Flood Warning
 
 # TODO - have data
-- `FFW` Flash Flood Warning
 - `SEV` Shows coordinates for all active watches.
 - `PTS` Probabilistic Outlook Points. Contains coordinates for SWO outlooks (WUUS01/02/03/48).
 
@@ -39,15 +39,18 @@ TODO
 
 
 # TODO
+- Assess all property names, so they make sense, and have correct values
+- Assess which properties are missing from products
+- Remove logger from tests, should just use println
 - Uncomment integration tests
 - Add remaining products
-- Add string enums
-- Show debug logs
+- "Until" times for warnings/watches/etc.
+- Add string enums - worth it?
+- Show debug logs, Disable logger output during tests
 - Feature vs product vs ???
 - Fix error handling of parsers
 - Are api/topic dao named correctly?
 - Error handling for kafka producing
-- Disable logger output during tests
 - Functional and integration tests
 - Tests only run with Kafka running/mock Kafka
 - Package clean up
@@ -59,4 +62,6 @@ TODO
 
 # Deeper questions
 - Return an error, or an empty object of the type specified in the signature? ie. getProductList()
-- where to keep kafka connection, and what is a dao *really*?
+- what is a dao *really*? what is a "gateway"? a "service"?
+- difference between functional and integration tests?
+- cmd structure, how to structure golang projects

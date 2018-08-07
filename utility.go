@@ -2,9 +2,31 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 )
+
+var movementRegex = regexp.MustCompile(`\ntime...mot...loc\s(\d{4}z)\s(\d+)\D{3}\s(\d+)kt\s(\d{4}\s\d{4})`)
+var latLonLineRegex = regexp.MustCompile(`lat...lon\s([\s|\S]*?)(?:time\.{3}|\n\n)`)
+var latLonRegex = regexp.MustCompile(`(\d{4}\s\d{4})`)
+var warningForRegex = regexp.MustCompile(`\n\n\*\s[\s|\S]+ warning for\.{3}\n([\s|\S]*?)\n\n\*`)
+
+func getIssuedFor(text string) []string {
+	var locations = []string{}
+	warningForMatch := warningForRegex.FindStringSubmatch(text)
+
+	if len(warningForMatch) == 2 {
+		warningFor := strings.Replace(warningForMatch[1], "...", "", -1)
+		warningFor = strings.Replace(warningFor, "  ", "", -1)
+		lines := strings.Split(warningFor, "\n")
+		for _, line := range lines {
+			locations = append(locations, strings.TrimSpace(line))
+		}
+	}
+
+	return locations
+}
 
 // TODO tie this closer to the enum - ideally string enums would be best
 func getNWSProductCode(product nwsProduct) string {
@@ -23,6 +45,8 @@ func getNWSProductCode(product nwsProduct) string {
 		return "swo"
 	case 6:
 		return "tor"
+	case 7:
+		return "ffw"
 	default:
 		logger.Warn("Unknown product")
 		return "unknown"
@@ -61,6 +85,7 @@ func getPolygon(text string) []coordinates {
 	var polygon []coordinates
 
 	latLonLineMatch := latLonLineRegex.FindStringSubmatch(text)
+	fmt.Printf("\n\n%v\n\n", text)
 	if len(latLonLineMatch) != 2 {
 		return polygon
 	}
